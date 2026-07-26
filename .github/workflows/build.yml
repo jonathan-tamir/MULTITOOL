@@ -1,0 +1,86 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.7'
+      - name: Build debug APK
+        id: build
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          gradle assembleDebug 2>&1 | tee build.log
+      - name: Commit results (APK and/or log)
+        run: |
+          mkdir -p apk ci
+          cp app/build/outputs/apk/debug/app-debug.apk apk/Multitool.apk 2>/dev/null || true
+          tail -c 300000 build.log > ci/build-log.txt || true
+          echo "outcome: ${{ steps.build.outcome }}" >> ci/build-log.txt
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add -f ci/build-log.txt
+          [ -f apk/Multitool.apk ] && git add -f apk/Multitool.apk
+          git commit -m "CI: apk build results [skip ci]" || echo "no changes"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && break || sleep 5
+          done
+      - name: Propagate failure
+        if: steps.build.outcome == 'failure'
+        run: exit 1
+
+  screens:
+    runs-on: ubuntu-latest
+    needs: apk
+    if: always()
+    env:
+      ENABLE_SCREENSHOTS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.7'
+      - name: Render screens (never blocks the APK)
+        id: render
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          gradle :screenshots:recordPaparazziDebug 2>&1 | tee screens.log
+      - name: Commit screenshots and/or log
+        continue-on-error: true
+        run: |
+          mkdir -p ci screenshots-out
+          cp -r screenshots/src/test/snapshots/images/* screenshots-out/ 2>/dev/null || true
+          tail -c 200000 screens.log > ci/screens-log.txt || true
+          echo "outcome: ${{ steps.render.outcome }}" >> ci/screens-log.txt
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add -f ci/screens-log.txt
+          git add -f screenshots-out || true
+          git commit -m "CI: screen renders [skip ci]" || echo "no changes"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && break || sleep 5
+          done

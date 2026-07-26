@@ -1,0 +1,9 @@
+# Core (baseline detector + FPV scorer) -- lightweight, no GPU needed
+numpy
+scipy
+scikit-learn
+soundfile
+joblib
+
+# CNN upgrade path only (train_cnn.py). Install separately when you want it:
+#   pip install torch

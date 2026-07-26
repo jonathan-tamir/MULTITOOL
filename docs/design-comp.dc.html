@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#101113;color:{{ fg }};font-family:"IBM Plex Sans",system-ui,sans-serif}
+a{color:oklch(0.80 0.11 195);text-decoration:none}a:hover{color:oklch(0.88 0.09 195)}
+@keyframes ovOut{to{opacity:0}}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes lineIn{from{opacity:0;transform:translateX(-8px)}}
+@keyframes sweepDown{from{top:-140px}to{top:100%}}
+@keyframes growX{from{width:0%}to{width:100%}}
+@keyframes dashRip{from{stroke-dashoffset:1400}to{stroke-dashoffset:0}}
+@keyframes ripX{from{left:-6%}to{left:106%}}
+@keyframes splitUp{0%,52%{transform:translateY(0)}100%{transform:translateY(-101%)}}
+@keyframes splitDn{0%,52%{transform:translateY(0)}100%{transform:translateY(101%)}}
+@keyframes wireDraw{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes wireFill{from{background:transparent}to{background:{{ soft }}}}
+@keyframes zoomGrid{from{transform:scale(.55);opacity:0}60%{opacity:1}to{transform:scale(1.35);opacity:0}}
+@keyframes scanWipe{from{transform:translateY(-100%)}to{transform:translateY(100%)}}
+@keyframes barsUp{from{transform:scaleY(.06)}to{transform:scaleY(1)}}
+@keyframes subIn{from{opacity:0;transform:translateY(10px)}}
+@keyframes bar{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+@keyframes radar{to{transform:rotate(360deg)}}
+@keyframes blink{50%{opacity:.2}}
+@keyframes drawerIn{from{transform:translateX(-100%)}}
+@keyframes cursor{50%{opacity:0}}
+</style>
+</helmet>
+
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0d0f12"/><rect x="38" y="22" width="24" height="56" rx="5" fill="none" stroke="oklch(0.80 0.12 195)" stroke-width="2"/><path d="M30 50h8l4-10 6 20 5-14 4 8h13" fill="none" stroke="oklch(0.80 0.12 195)" stroke-width="2"/></svg></template>
+<div style="min-height:100vh;box-sizing:border-box;padding:40px 44px;display:flex;gap:36px;align-items:flex-start;justify-content:center;color:{{ fg }};background:{{ pageBg }}">
+
+  <aside style="width:280px;flex:none;padding-top:6px">
+    <div style="font:600 10px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:oklch(0.80 0.11 195);margin-bottom:14px">BRIEF / SYSTEM</div>
+    <h1 style="font:700 22px/1.15 'IBM Plex Sans',sans-serif;margin:0 0 12px;letter-spacing:-.01em;color:{{ fg }}">Instrument shell</h1>
+    <p style="font:400 12.5px/1.6 'IBM Plex Sans',sans-serif;color:{{ fg60 }};margin:0 0 18px;text-wrap:pretty">A pocket lab: categories on the home screen, each opening into its own subspace whose motif hints at the physics it measures. Utility launch is one shared cinematic takeover — drop-in point for per-tool intros later.</p>
+    <div style="display:flex;flex-direction:column;gap:9px;font:400 11.5px/1.45 'IBM Plex Mono',monospace;color:{{ fg50 }}">
+      <div>TYPE — IBM Plex Sans / Plex Mono for all numerics</div>
+      <div>SURFACE — near-black neutrals, 2 elevations only</div>
+      <div>ACCENT — one hue per category, equal chroma</div>
+      <div>MOTIF — sound: spectrum · image: pixel grid · inertial: axes · misc: radar</div>
+      <div>DENSITY — technical, but one idea per row</div>
+    </div>
+    <div style="margin-top:22px;padding-top:18px;border-top:1px solid {{ line }};font:400 11.5px/1.6 'IBM Plex Mono',monospace;color:{{ fg40 }}">
+      NEXT — real mic capture for the spectrogram, sensor permission flow, per-utility intro hooks, light theme pass.
+    </div>
+  </aside>
+
+  <div style="flex:none;display:flex;flex-direction:column;gap:12px;align-items:center">
+    <x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" dark="{{ isDark }}" hint-size="412px,892px">
+      <div style="position:relative;height:100%;overflow:hidden;background:{{ bg }};color:{{ fg }};display:flex;flex-direction:column;font-family:'IBM Plex Sans',sans-serif">
+
+        <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+          <div style="flex:1;display:flex;flex-direction:column;padding:18px 18px 0 42px;animation:subIn .4s both">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+              <div>
+                <div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;color:{{ fg40 }}">FIELD LAB</div>
+                <div style="font:700 27px/1.1 'IBM Plex Sans',sans-serif;letter-spacing:-.02em;color:{{ fg }};margin-top:7px">Instruments</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;font:500 10px/1 'IBM Plex Mono',monospace;color:{{ fg50 }};padding-top:4px">
+                <div style="white-space:nowrap">{{ micChip }}</div>
+                <div style="white-space:nowrap">{{ awakeChip }}</div>
+                <div style="white-space:nowrap">{{ logChip }} · {{ resChip }}</div>
+              </div>
+            </div>
+
+            <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:11px">
+              <sc-for list="{{ cats }}" as="c" hint-placeholder-count="4">
+                <button onClick="{{ openCat }}" data-key="{{ c.key }}" style="all:unset;cursor:pointer;position:relative;overflow:hidden;box-sizing:border-box;height:132px;border-radius:14px;background:{{ card }};border:1px solid {{ line }};padding:13px;display:flex;flex-direction:column;justify-content:space-between" style-hover="background:{{ cardHover }};border-color:{{ line3 }}" style-active="transform:scale(.985)">
+                  <div style="position:absolute;inset:0;opacity:.5;background-image:{{ c.motif }};background-size:{{ c.motifSize }}"></div>
+                  <div style="position:relative;width:22px;height:22px;border-radius:6px;border:1.5px solid {{ c.accent }};display:flex;align-items:center;justify-content:center">
+                    <div style="width:6px;height:6px;border-radius:50%;background:{{ c.accent }}"></div>
+                  </div>
+                  <div style="position:relative">
+                    <div style="font:600 14.5px/1.25 'IBM Plex Sans',sans-serif;color:{{ fg }}">{{ c.name }}</div>
+                    <div style="font:400 10px/1 'IBM Plex Mono',monospace;color:{{ fg50 }};margin-top:7px">{{ c.count }} tools</div>
+                  </div>
+                </button>
+              </sc-for>
+              <button onClick="{{ noop }}" style="all:unset;cursor:pointer;box-sizing:border-box;height:132px;border-radius:14px;border:1px dashed {{ line2 }};display:flex;align-items:center;justify-content:center;font:500 11px/1 'IBM Plex Mono',monospace;color:{{ fg30 }}" style-hover="border-color:{{ line4 }};color:{{ fg50 }}">+ CATEGORY</button>
+            </div>
+
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isCat }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:1;display:flex;flex-direction:column;position:relative;overflow:hidden">
+            <div style="position:absolute;inset:0;opacity:.42;background-image:{{ catMotif }};background-size:{{ catMotifSize }}"></div>
+            <div style="position:relative;padding:16px 18px 0 42px;animation:subIn .45s both">
+              <button onClick="{{ goHome }}" style="all:unset;cursor:pointer;font:500 10.5px/1 'IBM Plex Mono',monospace;color:{{ fg50 }};display:flex;align-items:center;gap:7px" style-hover="color:{{ fg }}"><span style="font-size:13px">←</span> INSTRUMENTS</button>
+              <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:16px">
+                <div style="font:700 25px/1.1 'IBM Plex Sans',sans-serif;letter-spacing:-.02em;color:{{ fg }}">{{ catName }}</div>
+                <div style="font:500 10px/1 'IBM Plex Mono',monospace;color:{{ catAccent }};padding-bottom:4px">{{ catCode }}</div>
+              </div>
+              <div style="font:400 12px/1.5 'IBM Plex Sans',sans-serif;color:{{ fg50 }};margin-top:9px;max-width:300px;text-wrap:pretty">{{ catDesc }}</div>
+              <div style="height:1px;background:linear-gradient(to right,{{ catAccent }},{{ soft }});margin-top:16px;transform-origin:left;animation:growX .5s .1s both"></div>
+            </div>
+
+            <div style="position:relative;flex:1;overflow-y:auto;padding:14px 18px 22px 42px;display:flex;flex-direction:column;gap:9px;animation:subIn .5s .06s both">
+              <sc-for list="{{ catUtils }}" as="u" hint-placeholder-count="3">
+                <button onClick="{{ openUtil }}" data-name="{{ u.name }}" style="all:unset;cursor:pointer;box-sizing:border-box;padding:14px;border-radius:12px;background:{{ card }};border:1px solid {{ line }};display:flex;align-items:center;gap:13px" style-hover="border-color:{{ line3 }}" style-active="transform:scale(.99)">
+                  <div style="flex:none;width:34px;height:34px;border-radius:9px;background:{{ soft }};display:flex;align-items:center;justify-content:center;font:600 10px/1 'IBM Plex Mono',monospace;color:{{ catAccent }}">{{ u.tag }}</div>
+                  <div style="flex:1;min-width:0">
+                    <div style="font:600 14px/1.2 'IBM Plex Sans',sans-serif;color:{{ fg }}">{{ u.name }}</div>
+                    <div style="font:400 10.5px/1 'IBM Plex Mono',monospace;color:{{ fg40 }};margin-top:6px">{{ u.meta }}</div>
+                  </div>
+                  <div style="font:400 15px/1 'IBM Plex Sans',sans-serif;color:{{ fg30 }}">›</div>
+                </button>
+              </sc-for>
+              <div style="padding:13px 14px;border-radius:12px;border:1px dashed {{ line2 }};font:400 10.5px/1.5 'IBM Plex Mono',monospace;color:{{ fg30 }}">MORE TOOLS SLOT IN HERE</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isUtil }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:1;display:flex;flex-direction:column;padding:16px 18px 20px 42px">
+            <button onClick="{{ backToCat }}" style="all:unset;cursor:pointer;font:500 10.5px/1 'IBM Plex Mono',monospace;color:{{ fg50 }};display:flex;align-items:center;gap:7px" style-hover="color:{{ fg }}"><span style="font-size:13px">←</span> {{ backLabel }}</button>
+            <div style="font:700 23px/1.15 'IBM Plex Sans',sans-serif;letter-spacing:-.02em;color:{{ fg }};margin-top:15px">{{ utilName }}</div>
+            <div style="display:flex;gap:7px;margin-top:12px">
+              <div style="padding:6px 9px;border-radius:7px;background:{{ soft }};font:500 10px/1 'IBM Plex Mono',monospace;color:{{ catAccent }}">ARMED</div>
+              <div style="padding:6px 9px;border-radius:7px;background:{{ soft }};font:500 10px/1 'IBM Plex Mono',monospace;color:{{ fg50 }}">FS 48 kHz</div>
+              <div style="padding:6px 9px;border-radius:7px;background:{{ soft }};font:500 10px/1 'IBM Plex Mono',monospace;color:{{ fg50 }}">16 BIT</div>
+            </div>
+            <div style="flex:1;margin-top:16px;border-radius:14px;border:1px solid {{ line }};background:{{ canvasBg }};background-size:{{ canvasSize }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;text-align:center;padding:20px">
+              <div style="font:500 11px/1.6 'IBM Plex Mono',monospace;color:{{ fg50 }}">UTILITY CANVAS</div>
+              <div style="font:400 11px/1.6 'IBM Plex Mono',monospace;color:{{ fg30 }};max-width:230px">live view + controls for this tool land here<span style="animation:cursor 1s steps(1) infinite">_</span></div>
+            </div>
+            <div style="margin-top:12px;display:flex;gap:9px">
+              <button onClick="{{ noop }}" style="all:unset;cursor:pointer;flex:1;text-align:center;padding:13px;border-radius:11px;background:{{ catAccent }};color:{{ btnInk }};font:600 12.5px/1 'IBM Plex Sans',sans-serif" style-hover="filter:brightness(1.08)">Start capture</button>
+              <button onClick="{{ noop }}" style="all:unset;cursor:pointer;padding:13px 15px;border-radius:11px;border:1px solid {{ line2 }};font:600 12.5px/1 'IBM Plex Sans',sans-serif;color:{{ fg60 }}" style-hover="border-color:{{ line4 }}">Params</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <button onClick="{{ openDrawer }}" style="all:unset;cursor:pointer;position:absolute;left:0;top:0;bottom:0;width:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:linear-gradient(to right,{{ line }},{{ soft }} 70%,transparent);border-right:1px solid {{ line }}" style-hover="background:linear-gradient(to right,{{ line2 }},{{ soft }} 70%,transparent)">
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
+            <div style="width:12px;height:1.5px;background:{{ fg60 }}"></div>
+            <div style="width:12px;height:1.5px;background:{{ fg60 }}"></div>
+            <div style="width:8px;height:1.5px;background:{{ fg40 }}"></div>
+          </div>
+          <div style="font:600 8.5px/1 'IBM Plex Mono',monospace;letter-spacing:.22em;color:{{ fg40 }};writing-mode:vertical-rl">TOOLBAR</div>
+          <div style="display:flex;flex-direction:column;gap:7px;align-items:center">
+            <div style="width:6px;height:6px;border-radius:50%;background:oklch(0.80 0.12 195);opacity:.75"></div>
+            <div style="width:6px;height:6px;border-radius:2px;border:1px solid {{ fg40 }}"></div>
+            <div style="width:6px;height:6px;border-radius:50%;border:1px solid {{ fg40 }}"></div>
+          </div>
+        </button>
+
+        <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;inset:0;z-index:5">
+            <button onClick="{{ closeDrawer }}" style="all:unset;cursor:pointer;position:absolute;inset:0;background:{{ scrim }};animation:fadeIn .2s both"></button>
+            <div style="position:absolute;left:0;top:0;bottom:0;width:274px;background:{{ drawerBg }};border-right:1px solid {{ line }};display:flex;flex-direction:column;animation:drawerIn .26s cubic-bezier(.2,.8,.2,1) both">
+              <div style="padding:18px 16px 14px;border-bottom:1px solid {{ line }}">
+                <div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:{{ fg40 }}">SESSION</div>
+                <div style="font:600 15px/1.2 'IBM Plex Sans',sans-serif;margin-top:8px">Field Lab</div>
+                <div style="font:400 10.5px/1 'IBM Plex Mono',monospace;color:{{ fg40 }};margin-top:6px">{{ storageLine }}</div>
+              </div>
+              <div style="flex:1;overflow-y:auto;padding:14px 16px 20px">
+                <div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:{{ fg40 }};margin-bottom:10px">QUICK SETTINGS</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                  <sc-for list="{{ quick }}" as="q" hint-placeholder-count="6">
+                    <button onClick="{{ toggleQuick }}" data-key="{{ q.key }}" style="all:unset;cursor:pointer;box-sizing:border-box;padding:11px 10px;border-radius:10px;background:{{ q.bg }};border:1px solid {{ q.border }};display:flex;flex-direction:column;gap:8px" style-hover="border-color:{{ line3 }}">
+                      <div style="display:flex;align-items:center;justify-content:space-between">
+                        <span style="width:7px;height:7px;border-radius:50%;background:{{ q.dot }}"></span>
+                        <span style="font:500 8.5px/1 'IBM Plex Mono',monospace;color:{{ q.stateColor }}">{{ q.state }}</span>
+                      </div>
+                      <span style="font:500 11px/1.25 'IBM Plex Sans',sans-serif;color:{{ q.labelColor }}">{{ q.label }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+
+                <div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:{{ fg40 }};margin:22px 0 10px">RECENT ACTIONS</div>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <sc-for list="{{ recents }}" as="r" hint-placeholder-count="3">
+                    <button onClick="{{ openRecent }}" data-key="{{ r.key }}" data-name="{{ r.name }}" style="all:unset;cursor:pointer;padding:10px 8px;border-radius:8px;display:flex;align-items:center;gap:10px" style-hover="background:{{ soft }}">
+                      <span style="width:5px;height:5px;border-radius:50%;background:{{ r.accent }}"></span>
+                      <span style="flex:1;font:500 12px/1.2 'IBM Plex Sans',sans-serif;color:{{ fg80 }}">{{ r.name }}</span>
+                      <span style="font:400 9.5px/1 'IBM Plex Mono',monospace;color:{{ fg30 }}">{{ r.ago }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+
+                <div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:{{ fg40 }};margin:22px 0 10px">SETTINGS</div>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <sc-for list="{{ settings }}" as="s" hint-placeholder-count="4">
+                    <button onClick="{{ noop }}" style="all:unset;cursor:pointer;padding:11px 8px;border-radius:8px;display:flex;align-items:center;gap:10px" style-hover="background:{{ soft }}">
+                      <span style="flex:1;font:500 12px/1.2 'IBM Plex Sans',sans-serif;color:{{ fg80 }}">{{ s.label }}</span>
+                      <span style="font:400 10px/1 'IBM Plex Mono',monospace;color:{{ fg40 }}">{{ s.value }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="position:absolute;inset:0;z-index:9;pointer-events:none">{{ overlay }}</div>
+      </div>
+    </x-import>
+    <div style="font:400 10.5px/1 'IBM Plex Mono',monospace;color:{{ fg30 }}">412 × 892 · swipe handle on left edge</div>
+  </div>
+
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+const HUE = { sound: 195, image: 300, inertial: 75, misc: 150 };
+const acc = (k, dark) => 'oklch(' + (dark ? '0.80 0.12 ' : '0.55 0.15 ') + HUE[k] + ')';
+const accents = dark => ({ sound: acc('sound', dark), image: acc('image', dark), inertial: acc('inertial', dark), misc: acc('misc', dark) });
+const motifs = dark => {
+  const l = dark ? 'rgba(255,255,255,.10)' : 'rgba(0,0,0,.13)';
+  return {
+    sound: ['repeating-linear-gradient(90deg,' + l + ' 0 1px,transparent 1px 7px)', 'auto'],
+    image: ['linear-gradient(' + l + ' 1px,transparent 1px),linear-gradient(90deg,' + l + ' 1px,transparent 1px)', '13px 13px'],
+    inertial: ['linear-gradient(' + l + ' 1px,transparent 1px),linear-gradient(90deg,' + l + ' 1px,transparent 1px)', '100% 34px, 34px 100%'],
+    misc: ['repeating-radial-gradient(circle at 50% 42%,' + l + ' 0 1px,transparent 1px 26px)', 'auto'],
+  };
+};
+const CATS = [
+  { key: 'sound', name: 'Sound processing', code: 'ACOUSTIC', count: 4, desc: 'Microphone in, frequency domain out. Capture, analyse and generate audio in the field.',
+    utils: [
+      { name: 'Spectrogram', tag: 'STFT', meta: 'live · 48 kHz · log scale' },
+      { name: 'Resonance finder', tag: 'RES', meta: 'sweep + peak tracking' },
+      { name: 'Tone player', tag: 'GEN', meta: 'sine · 20 Hz – 20 kHz' },
+      { name: 'Level meter', tag: 'SPL', meta: 'A / C weighting' },
+    ] },
+  { key: 'image', name: 'Image processing', code: 'OPTICAL', count: 3, desc: 'Camera as a sensor. Spatial filters and 2D transforms computed on the frame stream.',
+    utils: [
+      { name: 'Edge detection', tag: 'EDGE', meta: 'Sobel · Canny' },
+      { name: 'Real-time FFT2', tag: 'FFT2', meta: 'magnitude spectrum' },
+      { name: 'Histogram', tag: 'HIST', meta: 'RGB + luminance' },
+    ] },
+  { key: 'inertial', name: 'Inertial devices', code: 'INERTIAL', count: 2, desc: 'Accelerometer, gyroscope and magnetometer streams with the statistics worth watching.',
+    utils: [
+      { name: 'Sensor stream', tag: 'IMU', meta: 'accel · gyro · mag' },
+      { name: 'Motion statistics', tag: 'STAT', meta: 'RMS · drift · PSD' },
+    ] },
+  { key: 'misc', name: 'Misc.', code: 'MISC', count: 1, desc: 'Experiments that do not belong anywhere else yet.',
+    utils: [{ name: 'Drone detector', tag: 'DRN', meta: 'rotor harmonics · alert' }] },
+];
+const QUICK = [
+  { key: 'dark', label: 'Dark theme' },
+  { key: 'awake', label: 'Keep awake' },
+  { key: 'haptics', label: 'Haptics' },
+  { key: 'grid', label: 'Grid overlay' },
+  { key: 'autolog', label: 'Auto-log data' },
+  { key: 'hires', label: 'Hi-res render' },
+];
+
+class Component extends DCLogic {
+  state = {
+    view: 'home', cat: 'sound', util: 'Spectrogram',
+    drawerOpen: false, overlayKind: null, fromRecent: false,
+    on: { dark: true, awake: true, haptics: false, grid: true, autolog: false, hires: false },
+    recents: [
+      { key: 'sound', name: 'Spectrogram', ago: '2m' },
+      { key: 'inertial', name: 'Sensor stream', ago: '1h' },
+      { key: 'misc', name: 'Drone detector', ago: 'Yest' },
+    ],
+  };
+  componentWillUnmount() { clearTimeout(this._t); }
+
+  cat() { return CATS.find(c => c.key === this.state.cat) || CATS[0]; }
+
+  theme() {
+    const d = !!this.state.on.dark;
+    const fg = a => d ? 'rgba(232,230,227,' + a + ')' : 'rgba(20,22,26,' + a + ')';
+    const w = a => d ? 'rgba(255,255,255,' + a + ')' : 'rgba(0,0,0,' + a + ')';
+    return {
+      isDark: d,
+      pageBg: d ? 'radial-gradient(120% 90% at 50% 0%,#17191c 0%,#0e0f11 60%,#0b0c0d 100%)'
+                : 'radial-gradient(120% 90% at 50% 0%,#fbfaf8 0%,#eeece8 60%,#e6e4df 100%)',
+      bg: d ? '#0a0b0d' : '#f6f5f2',
+      card: d ? '#131519' : '#ffffff',
+      cardHover: d ? '#191c21' : '#fbfaf8',
+      drawerBg: d ? '#101215' : '#ffffff',
+      scrim: d ? 'rgba(5,6,7,.62)' : 'rgba(30,32,36,.35)',
+      btnInk: d ? '#0a0b0d' : '#ffffff',
+      fg: d ? '#e8e6e3' : '#14161a',
+      fg80: fg('.8'), fg60: fg('.6'), fg50: fg('.5'), fg40: fg('.42'), fg30: fg('.32'), fg20: fg('.2'),
+      soft: w(d ? '.05' : '.04'), line: w(d ? '.08' : '.10'), line2: w(d ? '.13' : '.16'), line3: w(d ? '.2' : '.26'), line4: w(d ? '.28' : '.34'),
+    };
+  }
+
+  run(kind, ms, after) {
+    clearTimeout(this._t);
+    this.setState({ overlayKind: kind });
+    this._t = setTimeout(() => { this.setState({ overlayKind: null }); if (after) after(); }, ms);
+  }
+
+  toCat(key) {
+    this.setState({ cat: key, view: 'category', drawerOpen: false, fromRecent: false });
+    this.run('catZoom', 620);
+  }
+
+  toUtil(name, catKey, fromRecent) {
+    const cat = catKey || this.state.cat;
+    this.setState(s => ({
+      cat, util: name, view: 'utility', drawerOpen: false, fromRecent: !!fromRecent,
+      recents: [{ key: cat, name, ago: 'now' }].concat(s.recents.filter(r => r.name !== name)).slice(0, 4),
+    }));
+    this.run('signal', 1560);
+  }
+
+  overlay() {
+    const k = this.state.overlayKind;
+    if (!k) return null;
+    const e = React.createElement;
+    const c = this.cat();
+    const dark = !!this.state.on.dark;
+    const ac = accents(dark)[c.key];
+    const M = motifs(true);
+    const mono = '"IBM Plex Mono", monospace';
+    const base = { position: 'absolute', inset: 0, overflow: 'hidden' };
+
+    if (k === 'catZoom') return e('div', { style: { ...base, background: '#07080a', animation: 'ovOut .3s .3s both' } },
+      e('div', { style: { position: 'absolute', inset: '-20%', backgroundImage: M[c.key][0], backgroundSize: M[c.key][1], animation: 'zoomGrid .6s cubic-bezier(.3,0,.2,1) both' } }),
+      e('div', { style: { position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', font: `600 11px ${mono}`, letterSpacing: '.3em', color: ac, animation: 'fadeIn .25s both' } }, c.code));
+
+    const boxes = null;
+    return e('div', { style: base },
+      e('div', { style: { position: 'absolute', left: 0, right: 0, top: 0, height: '50%', background: '#07080a', borderBottom: `1px solid ${ac}66`, animation: 'splitUp 1.5s cubic-bezier(.7,0,.2,1) both' } }),
+      e('div', { style: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '50%', background: '#07080a', borderTop: `1px solid ${ac}66`, animation: 'splitDn 1.5s cubic-bezier(.7,0,.2,1) both' } }),
+      e('div', { style: { position: 'absolute', inset: 0, animation: 'ovOut .3s .78s both' } },
+        e('svg', { viewBox: '0 0 412 892', preserveAspectRatio: 'none', style: { position: 'absolute', inset: 0, width: '100%', height: '100%' } },
+          e('path', { d: 'M0 446 C 40 446 46 300 70 300 C 96 300 100 590 132 590 C 160 590 166 250 196 250 C 226 250 232 640 262 640 C 292 640 296 380 330 380 C 362 380 368 470 412 470', fill: 'none', stroke: ac, strokeWidth: 2, strokeDasharray: 1400, style: { animation: 'dashRip .8s cubic-bezier(.5,0,.4,1) both' } })),
+        e('div', { style: { position: 'absolute', top: 0, bottom: 0, width: 2, background: `linear-gradient(to bottom,transparent,${ac},transparent)`, boxShadow: `0 0 22px 5px ${ac}55`, animation: 'ripX .8s cubic-bezier(.5,0,.4,1) both' } }),
+        e('div', { style: { position: 'absolute', left: 0, right: 0, top: '54%', textAlign: 'center', font: `600 10.5px ${mono}`, letterSpacing: '.3em', color: ac, animation: 'fadeIn .3s .35s both' } }, this.state.util.toUpperCase())));
+  }
+
+  pill(active, accent) {
+    return {
+      bg: active ? 'rgba(255,255,255,.07)' : 'transparent',
+      border: active ? (accent || 'rgba(255,255,255,.28)') : 'rgba(255,255,255,.1)',
+      color: active ? '#e8e6e3' : 'rgba(232,230,227,.5)',
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const c = this.cat();
+    const th = this.theme();
+    const A = accents(th.isDark);
+    const M = motifs(th.isDark);
+    const ac = A[c.key];
+    return {
+      ...th,
+      canvasBg: s.on.grid
+        ? 'linear-gradient(' + th.line + ' 1px,transparent 1px),linear-gradient(90deg,' + th.line + ' 1px,transparent 1px)'
+        : 'repeating-linear-gradient(135deg,' + th.soft + ' 0 2px,transparent 2px 9px)',
+      canvasSize: s.on.grid ? '26px 26px' : 'auto',
+      isHome: s.view === 'home', isCat: s.view === 'category', isUtil: s.view === 'utility',
+      cats: CATS.map(x => ({ key: x.key, name: x.name, count: x.count, accent: A[x.key], motif: M[x.key][0], motifSize: M[x.key][1] })),
+      catName: c.name, catCode: c.code, catDesc: c.desc, catAccent: ac,
+      catMotif: M[c.key][0], catMotifSize: M[c.key][1],
+      catUtils: c.utils, utilName: s.util,
+      recents: s.recents.map(r => ({ ...r, accent: A[r.key] || A.misc })),
+      micChip: 'MIC · READY',
+      quick: QUICK.map(q => {
+        const on = !!s.on[q.key];
+        return { ...q, state: on ? 'ON' : 'OFF',
+          bg: on ? th.soft : 'transparent', border: on ? th.line3 : th.line,
+          dot: on ? A.sound : th.fg20, stateColor: on ? A.sound : th.fg30,
+          labelColor: on ? th.fg : th.fg50 };
+      }),
+      settings: [
+        { label: 'Sensor calibration', value: 'IMU' },
+        { label: 'Storage & exports', value: 'CSV' },
+        { label: 'Units', value: 'SI' },
+        { label: 'About', value: 'v0.3' },
+      ],
+      storageLine: '12 captures · 84 MB',
+      drawerOpen: s.drawerOpen,
+      overlay: this.overlay(),
+      openCat: ev => this.toCat(ev.currentTarget.dataset.key),
+      openUtil: ev => this.toUtil(ev.currentTarget.dataset.name),
+      openRecent: ev => this.toUtil(ev.currentTarget.dataset.name, ev.currentTarget.dataset.key, true),
+      goHome: () => this.setState({ view: 'home' }),
+      backLabel: s.fromRecent ? 'INSTRUMENTS' : c.code,
+      backToCat: () => {
+        if (s.fromRecent) { this.setState({ view: 'home', fromRecent: false }); return; }
+        this.setState({ view: 'category' });
+        this.run('catZoom', 620);
+      },
+      openDrawer: () => this.setState({ drawerOpen: true }),
+      closeDrawer: () => this.setState({ drawerOpen: false }),
+      toggleQuick: ev => { const k = ev.currentTarget.dataset.key; this.setState(st => ({ on: { ...st.on, [k]: !st.on[k] } })); },
+      replay: () => { if (s.view === 'utility') this.run('signal', 1560); else this.toCat(s.cat); },
+      logChip: s.on.autolog ? 'LOGGING' : 'IDLE',
+      awakeChip: s.on.awake ? 'AWAKE' : 'AUTO-SLEEP',
+      resChip: s.on.hires ? 'HI-RES' : 'STD',
+      noop: () => {},
+    };
+  }
+}
+</script>
+</body>
+</html>
