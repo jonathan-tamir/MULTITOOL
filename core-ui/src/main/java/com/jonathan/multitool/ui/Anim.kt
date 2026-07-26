@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jonathan.multitool.ui.theme.LocalShell
@@ -38,6 +39,8 @@ private val RipEase = CubicBezierEasing(0.5f, 0f, 0.4f, 1f)
 
 @Composable
 private fun clock(durationMs: Int): Float {
+    // Off-device rendering can't advance an animation, so show a representative frame instead.
+    if (LocalInspectionMode.current) return 0.35f
     val a = remember { Animatable(0f) }
     LaunchedEffect(Unit) { a.animateTo(1f, tween(durationMs, easing = LinearEasing)) }
     return a.value

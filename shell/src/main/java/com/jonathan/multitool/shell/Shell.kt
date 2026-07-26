@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,12 +33,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -207,7 +210,10 @@ private fun CategoryCard(cat: Category, modifier: Modifier, onClick: () -> Unit)
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(Modifier.height(7.dp))
-            Text("${cat.count} tools", style = Mono.label, color = t.fg50)
+            Text(
+                if (cat.count == 1) "1 tool" else "${cat.count} tools",
+                style = Mono.label, color = t.fg50
+            )
         }
     }
 }
@@ -412,7 +418,16 @@ private fun EdgeToolbar(onOpen: () -> Unit) {
             Spacer(Modifier.height(5.dp))
             Box(Modifier.width(8.dp).height(1.5.dp).background(t.fg40))
             Spacer(Modifier.height(16.dp))
-            Text("TOOLBAR", style = Mono.eyebrow, color = t.fg40, modifier = Modifier.graphicsLayer { rotationZ = 90f })
+            Box(Modifier.height(84.dp).width(12.dp), contentAlignment = Alignment.Center) {
+                Text(
+                    "TOOLBAR",
+                    style = Mono.eyebrow,
+                    color = t.fg40,
+                    maxLines = 1,
+                    softWrap = false,
+                    modifier = Modifier.requiredWidth(84.dp).rotate(90f)
+                )
+            }
         }
     }
 }
@@ -425,7 +440,9 @@ private fun Drawer(
     onRecent: (Recent) -> Unit
 ) {
     val t = LocalShell.current
-    val slide = remember { Animatable(1f) }
+    // Rendered off-device (screenshots / previews) animations never run, so start open there.
+    val inspecting = LocalInspectionMode.current
+    val slide = remember { Animatable(if (inspecting) 0f else 1f) }
     LaunchedEffect(Unit) { slide.animateTo(0f, tween(260)) }
 
     Box(Modifier.fillMaxSize()) {
