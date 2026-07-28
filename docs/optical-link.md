@@ -112,19 +112,78 @@ insurance against decoding ambient flicker as data.
 Throughput is unchanged: ~10 symbol/s, 8 data bits per 11-symbol frame, so **roughly one byte per
 second**. Half-duplex with ACK/NAK and retransmit.
 
-## 4. Where the real speed is, if we want it
+## 4. Going fast: stop blinking faster, blink wider
 
-**Screen instead of torch.** The display is a far better transmitter than the LED: no HAL round trip,
-vsync-accurate at 60–120 Hz, and it's a *2-D array* of independent emitters with *three colour channels*.
-Split it into a grid of tiles with corner markers for alignment, encode each tile independently, and the
-budget changes completely: 4×4 tiles × 3 channels at 15 symbol/s ≈ **700 bit/s**; 8×8 ≈ a few kbit/s
-before sync and error-correction overhead. This is the well-trodden screen-to-camera research direction,
-and it's within reach. Downside: phones must face screen-to-camera, so it's one-directional per pair.
+The temporal axis is capped and no amount of cleverness moves it:
 
-**Rolling shutter.** A CMOS sensor exposes rows sequentially, ~10–30 µs apart, so a single frame of a
-flashing LED filling the view records ~1000+ time slices as visible stripes. Decode the banding and a
-single LED becomes a **kbit/s** channel. Very device-dependent, needs manual exposure and a still hand —
-a stretch goal, but the most spectacular version of this idea.
+- **Camera**: 30 fps means a 15 symbol/s Nyquist ceiling. 60 or 120 fps capture helps linearly, but the
+  torch can't feed it.
+- **Torch**: ~10–20 edges/s through the HAL. Hard stop. Rolling-shutter decoding (kHz from a single LED)
+  is real, but it needs a transmitter that can *produce* kHz edges, and `setTorchMode` cannot. Dead end.
+
+So the torch link is a ~5 bit/s channel and always will be. Everything faster has to come from
+**spatial and spectral parallelism instead of temporal** — using the camera as the two-megapixel sampler
+it is, rather than as a single photodiode.
+
+### Screen as transmitter
+
+The display is vsync-accurate at 60–120 Hz, needs no HAL round trip, and is a 2-D array of independently
+addressable emitters with three colour channels. Transmit a grid of tiles; the receiver locates the
+screen via corner markers, rectifies the perspective with a homography, and samples tile centres.
+
+Tile size budget, screen filling ~60% of a 1080p camera frame:
+
+| Grid | Camera px per tile | Verdict |
+|---|---|---|
+| 8×8 | 81 | trivially safe |
+| 16×16 | 40 | safe |
+| 32×32 | 20 | workable, watch moiré |
+| 48×48 | 14 | marginal |
+
+Throughput, being honest about the overheads (frame duplication for capture sync, FEC, sync markers):
+
+| Configuration | Rate |
+|---|---|
+| 16×16 mono, frames sent twice | ~1.5 kbit/s |
+| 32×32 × 2 bits of colour, frames sent twice | ~12 kbit/s |
+| 32×32 × 3 channels, no duplication, 30 fps capture | ~74 kbit/s (theoretical ceiling) |
+
+Published phone screen-to-camera systems land in the **1–10 kbit/s** range in practice, so the middle row
+is the realistic target and the bottom row is what the physics allows before real-world losses.
+Either way it is **three orders of magnitude** past the torch.
+
+### What "both ends are the same app" actually buys
+
+Not the symbol rate — that was free anyway. The valuable parts:
+
+- **A calibration handshake.** Before payload, the transmitter shows a known pattern: colour swatches,
+  a tile grid, a timing ramp. The receiver measures real per-channel crosstalk, blur, usable tile size
+  and frame-sync behaviour, then picks the operating point. The link adapts to the actual pair of phones
+  and the actual lighting instead of to a guess.
+- **The slow link as the control channel for the fast one.** The torch link is bidirectional, robust, and
+  needs no aiming. Use it to negotiate: receiver reports back "32×32, green channel only, you're tearing,
+  slow to 15 fps". Two channels, one carrying metadata about the other.
+- **A shared PRNG seed.** Normally every coded packet carries its own index or seed, several bytes of
+  pure overhead per frame. With a pre-agreed seed both ends derive the same sequence, so a frame needs
+  only a counter.
+- **No negotiated formats.** Payload structure, colour space, grid geometry, code rate — all constants.
+
+### What "slight errors are OK" buys, and what it doesn't
+
+It buys the removal of the retransmission protocol, which is the single biggest simplification available.
+The right tool is a **fountain code** (LT or Raptor): the transmitter loops emitting encoded droplets
+indefinitely, the receiver collects any K(1+ε) of them and reconstructs. No ACKs, no retransmit logic,
+no frame-loss bookkeeping — losing frames to tearing, hand shake or someone walking past just means
+waiting slightly longer. For a one-way lossy optical broadcast this is close to the ideal design.
+
+It does **not** mean tolerating bit errors in the payload. A flipped bit inside a compressed or
+structured file is not a "slight" error, it's a corrupt file. The layering that resolves this:
+
+- **Within a frame** — CRC to detect, Reed–Solomon to correct; a frame that still fails is simply discarded.
+- **Across frames** — the fountain code treats those discards as erasures and rides through them.
+
+Bit errors get corrected or the frame gets dropped; erasures get absorbed. The place real tolerance pays
+off is the *payload type*: a JPEG or an audio clip degrades gracefully under residual error, a ZIP does not.
 
 ## 5. The uncomfortable comparison
 
