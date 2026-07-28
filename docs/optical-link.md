@@ -185,6 +185,40 @@ structured file is not a "slight" error, it's a corrupt file. The layering that 
 Bit errors get corrected or the frame gets dropped; erasures get absorbed. The place real tolerance pays
 off is the *payload type*: a JPEG or an audio clip degrades gracefully under residual error, a ZIP does not.
 
+### How the screen link actually works
+
+**Geometry.** A phone's screen and front camera share one face; its rear camera and torch share the
+other. Stand A's screen in front of B's back and both channels line up for free: A's screen → B's rear
+camera (fast, forward), B's torch → A's front camera (slow, return). The control channel is physically
+compatible with the data channel, which is why the torch tier keeps earning its place.
+
+**Transmitter.** Render frames at vsync. Each frame carries four corner markers, a row ID band down one
+edge, and the data tiles. Hold every data frame for at least two camera frame periods so an
+unsynchronised 30 fps receiver is guaranteed one clean look at it.
+
+**Receiver.** Lock exposure, focus and white balance first — auto-anything hunts and destroys the colour
+mapping mid-transfer. Then per frame: locate the markers, fit a homography, warp to a canonical grid,
+read the row IDs, sample the central ~50% of each tile (edges bleed into neighbours), classify against
+the calibrated constellation, Reed–Solomon, CRC, and hand surviving frames to the fountain decoder.
+
+**The four things that will actually bite:**
+
+- **Tearing.** The camera shutter isn't synced to the screen refresh, so an exposure can straddle a frame
+  change — and because of rolling shutter it lands as a *spatial* split: top rows from frame N, bottom
+  from N+1. Hence the row ID band: instead of discarding the whole capture, locate the tear line and
+  salvage both halves. The rolling shutter becomes a feature.
+- **Moiré.** The screen's pixel grid beats against the sensor grid. Mitigate with tiles large enough to
+  average it out, a low-pass before sampling, and — counter-intuitively — a deliberate slight defocus.
+- **Perspective and hand shake.** Re-fit the homography every frame from the markers. If we get strict,
+  markers along the edges allow a per-row fit that also undoes rolling-shutter skew.
+- **Colour and glare.** The ISP applies its own white balance and tone curve, and a lamp reflecting off
+  the glass wipes out a region entirely. Locked AWB plus the calibration frame handles the first; tilting
+  the phones slightly handles the second.
+
+**Build order.** Start with a still-image transfer at one frame per second — show, capture, decode,
+advance — which exercises markers, homography, sampling and decoding with no timing pressure at all.
+Only then chase frame rate. Even that crawling first version moves ~1 kbit/s, roughly 200× the torch.
+
 ## 5. Restricting the payload to English letters
 
 A torch-tier optimisation only — the screen link carries files and would just use gzip. But on a
