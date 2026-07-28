@@ -49,37 +49,68 @@ how cleanly the duration clusters separate.
 
 ## 3. Phone-to-phone data link
 
-The instinct to reach for UART is right, but its one assumption is the thing that breaks here.
+**UART is the right answer, and an earlier draft of this note was wrong to dismiss it.** Both ends run
+the same app, so the symbol rate is a shared constant, and a start bit aligns each frame. That works.
+The reason it works is worth writing down, because it also shows exactly where it stops working.
 
-**Why UART doesn't survive the trip.** Async serial works because both ends already agree on a baud rate
-and their clocks stay within ~2% over a 10-bit frame. Between two phones, over a HAL with tens of
-milliseconds of jitter, sampled by a camera whose frame clock is unrelated to either — that agreement
-doesn't exist. I2C solves the same problem with a separate clock wire; we have one wire, and it's a lamp.
+### The clock is not the problem
 
-**So: self-clocking.** Manchester encoding sends every bit as a *transition* — high-to-low is 0,
-low-to-high is 1 — so the clock is recoverable from the data itself, and the signal is DC-balanced,
-which also makes the adaptive threshold trivial. Cost: half the raw rate. Worth it.
+UART's tolerance rule (~2% over a 10-bit frame) is about *drift* — two free-running clocks diverging.
+Phone quartz is ±20 ppm. At a 100 ms symbol period, a 100-symbol frame lasts 10 s, over which 20 ppm
+accumulates **0.2 ms** of error. Against a 100 ms bit cell that is nothing. Drift is a non-issue here by
+three orders of magnitude.
 
-Frame structure, in the spirit of a UART frame but self-clocked:
+What varies is not the clock but the **actuation latency**: each `setTorchMode` edge lands late by a
+variable amount. That splits into two very different quantities:
+
+- **Mean latency** — a constant offset. Harmless: the start bit absorbs it. But if the transmitter loops
+  on `sleep(100 ms)`, the mean *period* becomes 100 ms + mean overhead, and a period error accumulates
+  exactly like drift. Fix at the source: schedule edges against absolute deadlines
+  (`t0 + n × period`), never relative sleeps. Then the mean period is exactly nominal, whatever the HAL does.
+- **Jitter** — the random part, roughly ±10–20 ms. It does **not** accumulate. It only has to stay below
+  half a bit cell, forever, regardless of frame length.
+
+### The real budget
+
+Per-edge uncertainty at the receiver:
+
+| Source | Magnitude |
+|---|---|
+| Torch actuation jitter | ±10–20 ms |
+| Camera sampling quantisation (30 fps, unsynchronised) | ±16 ms |
+| Threshold crossing on a soft edge | a few ms |
+| **Total, worst case** | **~±40 ms** |
+
+That must stay under half a symbol period. So the floor is around **100 ms**, and **120–150 ms** buys
+real margin. At those rates plain UART framing is correct, simpler than the alternatives, and needs no
+phase-locking at all. Above that rate — or on a 60 fps receiver — the budget tightens and self-clocking
+starts to earn its keep.
+
+### Frame format
 
 ```
-[ preamble: ~16 alternating symbols ][ start delimiter ][ length ][ payload ][ CRC-8 ]
+idle = dark    start bit = light    8 data bits    stop bit = dark
+[ preamble 0xAA × 2 ][ start ][ length ][ payload, bit-stuffed ][ CRC-8 ][ stop ]
 ```
 
-- **Preamble** — the receiver measures the symbol period from it and phase-locks (early/late gate:
-  compare energy just before and just after each expected edge, nudge the sampling phase). This is the
-  step that replaces "both sides agreed on 9600 baud".
-- **Start delimiter** — a pattern that can't occur in Manchester data (e.g. a deliberate code violation),
-  so the payload boundary is unambiguous.
-- **CRC-8** — cheap, catches nearly everything at this frame size.
-- **ARQ** — receiver flashes back a short ACK/NAK; sender retransmits on silence or NAK. Half-duplex,
-  turn-taking, which also sidesteps both phones flashing at once.
+Three deliberate choices:
 
-Realistic throughput: 100 ms half-bit → 5 bit/s. Push the unit to 60 ms → ~8 bit/s. Call it **one byte
-per second.** A short text message takes a minute. It will feel like 1840, and that's the charm.
+- **Idle dark, not idle high.** Textbook UART idles high; over light that means the torch burns
+  continuously between frames — battery, LED heat, and a saturated receiver whose auto-exposure has
+  nothing to recover from. Invert it.
+- **Oversample and vote.** A real UART receiver samples 16× per bit and majority-votes the middle three.
+  We get ~3 samples per bit at 30 fps and 100 ms symbols — same trick, thinner margin, still worth doing.
+- **Bit-stuffing (or 4b5b).** The one genuine weakness of NRZ over light: a payload byte of `0x00`
+  or `0xFF` holds the LED steady for ten symbol periods, during which the adaptive threshold has no
+  edges to track and the camera's exposure control drifts. Forcing a transition every ~4 symbols costs
+  ~25% overhead, against Manchester's 50%, and removes the failure mode.
 
-**Geometry.** Torch and back camera sit next to each other, so two phones facing each other works: each
-watches the other's torch. Half-duplex avoids the case where one phone's torch blinds its own receiver.
+The preamble stays, but its job is downgraded from *establishing* the rate to *confirming* it: measure
+the observed symbol period, check it against the constant, and reject the lock if it disagrees. Cheap
+insurance against decoding ambient flicker as data.
+
+Throughput is unchanged: ~10 symbol/s, 8 data bits per 11-symbol frame, so **roughly one byte per
+second**. Half-duplex with ACK/NAK and retransmit.
 
 ## 4. Where the real speed is, if we want it
 
