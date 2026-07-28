@@ -185,7 +185,59 @@ structured file is not a "slight" error, it's a corrupt file. The layering that 
 Bit errors get corrected or the frame gets dropped; erasures get absorbed. The place real tolerance pays
 off is the *payload type*: a JPEG or an audio clip degrades gracefully under residual error, a ZIP does not.
 
-## 5. The uncomfortable comparison
+## 5. Restricting the payload to English letters
+
+A torch-tier optimisation only — the screen link carries files and would just use gzip. But on a
+5 bit/s channel it is the difference between unusable and usable.
+
+At a 150 ms symbol period (6.7 symbols/s):
+
+| Encoding | sym/char | char/s | 100 chars |
+|---|---|---|---|
+| ASCII byte in a per-character UART frame | 10.0 | 0.67 | 150 s |
+| Morse, English average | ~10 | 0.67 | 150 s |
+| 5-bit letter code, per-character frame | 7.0 | 0.95 | 105 s |
+| 5-bit letter code, message-level framing | 5.0 | 1.33 | 75 s |
+| Static Huffman on English frequencies (~3 bits/char) | 3.0 | 2.22 | 45 s |
+| Order-2 arithmetic + shipped model (~2 bits/char) | 2.0 | 3.33 | 30 s |
+
+Two things worth noticing. **Morse is no faster than sending raw ASCII bytes** — it averages ~10 units
+per character, so its efficiency advantage over a naive byte is nil; what it buys is human decodability,
+not speed. And **a plain 5-bit alphabet code with message-level framing is already 2× better than either**,
+before any compression at all.
+
+Alphabet entropy for reference: uniform over 27 symbols is 4.75 bits, English letter frequencies bring it
+to ~4.1, order-2 context to ~3.1, and Shannon's human-prediction experiments put the true entropy of
+English at 0.6–1.3 bits per character. The gap between 4.75 and ~1 is what a shipped model can claw back —
+and because both ends are the same binary, the model costs nothing to transmit.
+
+### The compression / robustness tension
+
+This is where the "slight errors are fine" appetite argues **against** maximum compression:
+
+- **Arithmetic coding desynchronises catastrophically.** One flipped bit and every character after it is
+  garbage. On a channel where we've decided to tolerate errors, that's the wrong failure mode.
+- **Fixed 5-bit codes fail locally.** A corrupted character is one wrong letter; the rest of the message
+  is untouched.
+- **Static Huffman sits in between** and is the sweet spot: ~2× compression, and Huffman codes tend to
+  re-synchronise within a few symbols after an error rather than losing the remainder.
+
+### English is itself the error-correcting code
+
+The real prize in restricting the alphabet isn't the bits saved, it's that the receiver knows what
+English looks like. `HELLO WQRLD` needs no FEC — a dictionary fixes it, and so does a human. Concretely:
+
+- Constrain hard: only 27 symbols are legal, so many corruptions are detectably invalid on arrival.
+- Score candidate corrections with a shipped bigram/trigram table and surface the best fix, marked as a
+  correction rather than silently applied.
+- Show confidence per character in the UI, so a marginal decode reads as marginal instead of as fact.
+
+Which means the honest recommendation for the torch tier is: **5-bit alphabet, message-level framing,
+optional static Huffman, and a language model doing the error correction that FEC would otherwise cost
+bandwidth to provide.** Roughly 3× faster than bytes, and it degrades into something a person can still
+read instead of into noise.
+
+## 6. The uncomfortable comparison
 
 The app already has an FFT, a tone generator, and mic capture. An acoustic modem — FSK, or chirps at
 18–20 kHz where it's inaudible — would do **hundreds of bit/s** with code we mostly already have, and it
@@ -193,7 +245,7 @@ works around corners and in pockets. Light is the more beautiful demo; sound is 
 Worth building both and letting the link layer sit on top of either — same framing, same CRC, same ARQ,
 different physical layer. That's the design that makes the protocol work reusable.
 
-## 6. What already exists that helps
+## 7. What already exists that helps
 
 - `feature-video` — CameraX pipeline, per-frame luminance sampling, temporal analysis
 - `core/dsp/Fft` + `Biquad` — if we go acoustic, or want to detect a carrier frequency in the light
