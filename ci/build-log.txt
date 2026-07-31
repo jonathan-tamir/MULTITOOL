@@ -13,39 +13,39 @@ Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :core:preBuild UP-TO-DATE
 > Task :core-ui:preBuild UP-TO-DATE
 > Task :app:preBuild UP-TO-DATE
-> Task :core:preDebugBuild UP-TO-DATE
-> Task :feature-audio:preDebugBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
+> Task :core:preDebugBuild UP-TO-DATE
 > Task :core-ui:preDebugBuild UP-TO-DATE
+> Task :feature-audio:preDebugBuild UP-TO-DATE
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
 > Task :app:checkKotlinGradlePluginConfigurationErrors
 > Task :feature-comms:preBuild UP-TO-DATE
 > Task :feature-comms:preDebugBuild UP-TO-DATE
 > Task :feature-audio:writeDebugAarMetadata
-> Task :feature-comms:writeDebugAarMetadata
-> Task :feature-drone:preBuild UP-TO-DATE
-> Task :feature-drone:preDebugBuild UP-TO-DATE
-> Task :core-ui:writeDebugAarMetadata
-> Task :feature-image:preBuild UP-TO-DATE
 > Task :core:writeDebugAarMetadata
-> Task :shell:preBuild UP-TO-DATE
+> Task :feature-drone:preBuild UP-TO-DATE
+> Task :feature-image:preBuild UP-TO-DATE
+> Task :feature-comms:writeDebugAarMetadata
 > Task :feature-image:preDebugBuild UP-TO-DATE
+> Task :feature-drone:preDebugBuild UP-TO-DATE
 > Task :feature-video:preBuild UP-TO-DATE
+> Task :core-ui:writeDebugAarMetadata
+> Task :shell:preBuild UP-TO-DATE
 > Task :shell:preDebugBuild UP-TO-DATE
 > Task :feature-video:preDebugBuild UP-TO-DATE
-> Task :feature-drone:writeDebugAarMetadata
 > Task :feature-image:writeDebugAarMetadata
+> Task :feature-drone:writeDebugAarMetadata
 > Task :shell:writeDebugAarMetadata
 > Task :feature-video:writeDebugAarMetadata
 > Task :core:generateDebugResValues
 > Task :app:generateDebugResValues
-> Task :core-ui:generateDebugResValues
 > Task :feature-audio:generateDebugResValues FROM-CACHE
+> Task :core-ui:generateDebugResValues FROM-CACHE
+> Task :feature-audio:generateDebugResources FROM-CACHE
 > Task :core:generateDebugResources
 > Task :core-ui:generateDebugResources
-> Task :feature-audio:generateDebugResources FROM-CACHE
-> Task :feature-audio:packageDebugResources
 > Task :core:packageDebugResources
+> Task :feature-audio:packageDebugResources
 > Task :feature-comms:generateDebugResValues FROM-CACHE
 > Task :feature-drone:generateDebugResValues FROM-CACHE
 > Task :feature-comms:generateDebugResources FROM-CACHE
@@ -54,52 +54,52 @@ Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :feature-comms:packageDebugResources
 > Task :feature-image:generateDebugResValues FROM-CACHE
 > Task :feature-video:generateDebugResValues FROM-CACHE
-> Task :feature-video:generateDebugResources FROM-CACHE
 > Task :feature-image:generateDebugResources FROM-CACHE
+> Task :feature-video:generateDebugResources FROM-CACHE
 > Task :feature-video:packageDebugResources
 > Task :feature-image:packageDebugResources
 > Task :shell:generateDebugResValues FROM-CACHE
-> Task :core-ui:packageDebugResources
-> Task :core:extractDeepLinksDebug
-> Task :core-ui:extractDeepLinksDebug FROM-CACHE
 > Task :shell:generateDebugResources FROM-CACHE
+> Task :core:extractDeepLinksDebug
 > Task :shell:packageDebugResources
+> Task :core-ui:packageDebugResources
+> Task :core-ui:extractDeepLinksDebug FROM-CACHE
 > Task :feature-audio:extractDeepLinksDebug FROM-CACHE
-> Task :core-ui:processDebugManifest
 > Task :feature-audio:processDebugManifest
 > Task :core:processDebugManifest
-> Task :feature-image:extractDeepLinksDebug FROM-CACHE
 > Task :feature-comms:extractDeepLinksDebug FROM-CACHE
 > Task :feature-drone:extractDeepLinksDebug FROM-CACHE
-> Task :feature-image:processDebugManifest
+> Task :core-ui:processDebugManifest
+> Task :feature-image:extractDeepLinksDebug FROM-CACHE
 > Task :feature-comms:processDebugManifest
-> Task :feature-drone:processDebugManifest
-> Task :shell:extractDeepLinksDebug FROM-CACHE
 > Task :feature-video:extractDeepLinksDebug FROM-CACHE
-> Task :shell:processDebugManifest
+> Task :feature-drone:processDebugManifest
+> Task :feature-image:processDebugManifest
+> Task :shell:extractDeepLinksDebug FROM-CACHE
 > Task :feature-video:processDebugManifest
+> Task :shell:processDebugManifest
 > Task :feature-audio:compileDebugLibraryResources
 > Task :core:compileDebugLibraryResources
 > Task :core-ui:compileDebugLibraryResources
 > Task :feature-audio:parseDebugLocalResources
 > Task :core:parseDebugLocalResources
 > Task :core-ui:parseDebugLocalResources
-> Task :core-ui:generateDebugRFile
 > Task :core:generateDebugRFile
 > Task :feature-audio:generateDebugRFile
+> Task :core-ui:generateDebugRFile
 > Task :feature-comms:compileDebugLibraryResources FROM-CACHE
 > Task :feature-drone:compileDebugLibraryResources FROM-CACHE
 > Task :feature-image:compileDebugLibraryResources FROM-CACHE
-> Task :feature-comms:parseDebugLocalResources FROM-CACHE
 > Task :feature-drone:parseDebugLocalResources FROM-CACHE
+> Task :feature-comms:parseDebugLocalResources FROM-CACHE
 > Task :feature-image:parseDebugLocalResources FROM-CACHE
 > Task :feature-comms:generateDebugRFile
-> Task :feature-drone:generateDebugRFile
 > Task :feature-video:compileDebugLibraryResources FROM-CACHE
-> Task :shell:compileDebugLibraryResources FROM-CACHE
-> Task :feature-video:parseDebugLocalResources FROM-CACHE
+> Task :feature-drone:generateDebugRFile
 > Task :feature-image:generateDebugRFile
+> Task :feature-video:parseDebugLocalResources FROM-CACHE
 > Task :core:checkKotlinGradlePluginConfigurationErrors
+> Task :shell:compileDebugLibraryResources FROM-CACHE
 > Task :shell:parseDebugLocalResources FROM-CACHE
 > Task :feature-video:generateDebugRFile
 > Task :core-ui:checkKotlinGradlePluginConfigurationErrors
@@ -111,96 +111,96 @@ Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :feature-drone:checkKotlinGradlePluginConfigurationErrors
 > Task :feature-comms:javaPreCompileDebug FROM-CACHE
 > Task :feature-image:checkKotlinGradlePluginConfigurationErrors
-> Task :feature-image:javaPreCompileDebug FROM-CACHE
-> Task :feature-video:checkKotlinGradlePluginConfigurationErrors
 > Task :feature-drone:javaPreCompileDebug FROM-CACHE
-> Task :shell:checkKotlinGradlePluginConfigurationErrors
+> Task :feature-video:checkKotlinGradlePluginConfigurationErrors
+> Task :feature-image:javaPreCompileDebug FROM-CACHE
 > Task :feature-video:javaPreCompileDebug FROM-CACHE
+> Task :shell:checkKotlinGradlePluginConfigurationErrors
 > Task :shell:javaPreCompileDebug FROM-CACHE
+> Task :feature-audio:mergeDebugShaders
+> Task :feature-audio:compileDebugShaders NO-SOURCE
+> Task :feature-audio:generateDebugAssets UP-TO-DATE
 > Task :core-ui:mergeDebugShaders
 > Task :core-ui:compileDebugShaders NO-SOURCE
 > Task :core-ui:generateDebugAssets UP-TO-DATE
 > Task :core-ui:packageDebugAssets
-> Task :feature-audio:mergeDebugShaders
-> Task :feature-audio:compileDebugShaders NO-SOURCE
-> Task :feature-audio:generateDebugAssets UP-TO-DATE
 > Task :feature-audio:packageDebugAssets
 > Task :feature-comms:mergeDebugShaders
 > Task :feature-comms:compileDebugShaders NO-SOURCE
 > Task :feature-comms:generateDebugAssets UP-TO-DATE
+> Task :feature-comms:packageDebugAssets
 > Task :feature-drone:mergeDebugShaders
 > Task :feature-drone:compileDebugShaders NO-SOURCE
 > Task :feature-drone:generateDebugAssets UP-TO-DATE
-> Task :feature-comms:packageDebugAssets
 > Task :feature-image:mergeDebugShaders
 > Task :feature-image:compileDebugShaders NO-SOURCE
 > Task :feature-image:generateDebugAssets UP-TO-DATE
-> Task :feature-drone:packageDebugAssets
 > Task :feature-image:packageDebugAssets
 > Task :feature-video:mergeDebugShaders
-> Task :shell:mergeDebugShaders
-> Task :shell:compileDebugShaders NO-SOURCE
-> Task :shell:generateDebugAssets UP-TO-DATE
 > Task :feature-video:compileDebugShaders NO-SOURCE
 > Task :feature-video:generateDebugAssets UP-TO-DATE
-> Task :shell:packageDebugAssets
+> Task :feature-drone:packageDebugAssets
 > Task :feature-video:packageDebugAssets
-> Task :feature-audio:mergeDebugJniLibFolders
 > Task :core-ui:mergeDebugJniLibFolders
-> Task :feature-audio:mergeDebugNativeLibs NO-SOURCE
+> Task :shell:mergeDebugShaders
 > Task :core-ui:mergeDebugNativeLibs NO-SOURCE
-> Task :feature-audio:copyDebugJniLibsProjectOnly
+> Task :shell:compileDebugShaders NO-SOURCE
+> Task :shell:generateDebugAssets UP-TO-DATE
 > Task :core-ui:copyDebugJniLibsProjectOnly
+> Task :shell:packageDebugAssets
 > Task :feature-comms:mergeDebugJniLibFolders
+> Task :feature-audio:mergeDebugJniLibFolders
+> Task :feature-audio:mergeDebugNativeLibs NO-SOURCE
 > Task :feature-comms:mergeDebugNativeLibs NO-SOURCE
-> Task :feature-drone:mergeDebugJniLibFolders
-> Task :feature-drone:mergeDebugNativeLibs NO-SOURCE
+> Task :feature-audio:copyDebugJniLibsProjectOnly
 > Task :feature-comms:copyDebugJniLibsProjectOnly
-> Task :feature-drone:copyDebugJniLibsProjectOnly
+> Task :feature-drone:mergeDebugJniLibFolders
 > Task :feature-image:mergeDebugJniLibFolders
-> Task :feature-video:mergeDebugJniLibFolders
 > Task :feature-image:mergeDebugNativeLibs NO-SOURCE
-> Task :feature-video:mergeDebugNativeLibs NO-SOURCE
 > Task :feature-image:copyDebugJniLibsProjectOnly
+> Task :feature-drone:mergeDebugNativeLibs NO-SOURCE
+> Task :feature-drone:copyDebugJniLibsProjectOnly
+> Task :feature-video:mergeDebugJniLibFolders
+> Task :feature-video:mergeDebugNativeLibs NO-SOURCE
 > Task :feature-video:copyDebugJniLibsProjectOnly
 > Task :shell:mergeDebugJniLibFolders
 > Task :core-ui:stripDebugDebugSymbols NO-SOURCE
-> Task :core-ui:copyDebugJniLibsProjectAndLocalJars
 > Task :shell:mergeDebugNativeLibs NO-SOURCE
-> Task :core-ui:extractDeepLinksForAarDebug
 > Task :shell:copyDebugJniLibsProjectOnly
+> Task :core-ui:copyDebugJniLibsProjectAndLocalJars
+> Task :core-ui:extractDeepLinksForAarDebug
 > Task :feature-audio:stripDebugDebugSymbols NO-SOURCE
 > Task :core-ui:prepareDebugArtProfile
 > Task :feature-audio:copyDebugJniLibsProjectAndLocalJars
 > Task :feature-audio:extractDeepLinksForAarDebug FROM-CACHE
-> Task :core-ui:prepareLintJarForPublish
-> Task :feature-comms:stripDebugDebugSymbols NO-SOURCE
 > Task :feature-audio:prepareDebugArtProfile
+> Task :feature-audio:prepareLintJarForPublish
+> Task :feature-comms:stripDebugDebugSymbols NO-SOURCE
+> Task :core-ui:prepareLintJarForPublish
+> Task :feature-drone:stripDebugDebugSymbols NO-SOURCE
 > Task :feature-comms:copyDebugJniLibsProjectAndLocalJars
 > Task :feature-comms:extractDeepLinksForAarDebug FROM-CACHE
-> Task :feature-audio:prepareLintJarForPublish
 > Task :feature-comms:prepareDebugArtProfile
-> Task :feature-drone:stripDebugDebugSymbols NO-SOURCE
-> Task :feature-comms:prepareLintJarForPublish
-> Task :feature-image:stripDebugDebugSymbols NO-SOURCE
 > Task :feature-drone:copyDebugJniLibsProjectAndLocalJars
 > Task :feature-drone:extractDeepLinksForAarDebug FROM-CACHE
+> Task :feature-comms:prepareLintJarForPublish
 > Task :feature-drone:prepareDebugArtProfile
-> Task :feature-image:copyDebugJniLibsProjectAndLocalJars
-> Task :feature-image:extractDeepLinksForAarDebug FROM-CACHE
+> Task :feature-image:stripDebugDebugSymbols NO-SOURCE
 > Task :feature-drone:prepareLintJarForPublish
+> Task :feature-image:copyDebugJniLibsProjectAndLocalJars
 > Task :feature-video:stripDebugDebugSymbols NO-SOURCE
+> Task :feature-image:extractDeepLinksForAarDebug FROM-CACHE
 > Task :feature-image:prepareDebugArtProfile
-> Task :feature-video:copyDebugJniLibsProjectAndLocalJars
 > Task :feature-image:prepareLintJarForPublish
-> Task :feature-video:extractDeepLinksForAarDebug FROM-CACHE
+> Task :feature-video:copyDebugJniLibsProjectAndLocalJars
 > Task :shell:stripDebugDebugSymbols NO-SOURCE
-> Task :feature-video:prepareDebugArtProfile
 > Task :shell:copyDebugJniLibsProjectAndLocalJars
-> Task :feature-video:prepareLintJarForPublish
+> Task :feature-video:extractDeepLinksForAarDebug FROM-CACHE
+> Task :feature-video:prepareDebugArtProfile
 > Task :shell:extractDeepLinksForAarDebug FROM-CACHE
 > Task :shell:prepareDebugArtProfile
 > Task :shell:prepareLintJarForPublish
+> Task :feature-video:prepareLintJarForPublish
 > Task :core:javaPreCompileDebug FROM-CACHE
 > Task :core:mergeDebugShaders
 > Task :core:compileDebugShaders NO-SOURCE
@@ -208,31 +208,31 @@ Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :core:packageDebugAssets
 > Task :core:mergeDebugJniLibFolders
 > Task :core:mergeDebugNativeLibs NO-SOURCE
-> Task :core:copyDebugJniLibsProjectOnly
 > Task :core:stripDebugDebugSymbols NO-SOURCE
-> Task :core:copyDebugJniLibsProjectAndLocalJars
+> Task :core:copyDebugJniLibsProjectOnly
 > Task :core:extractDeepLinksForAarDebug FROM-CACHE
 > Task :core:prepareDebugArtProfile
 > Task :core:prepareLintJarForPublish
+> Task :core:copyDebugJniLibsProjectAndLocalJars
 > Task :app:checkDebugAarMetadata
 > Task :app:mapDebugSourceSetPaths
 > Task :app:generateDebugResources
 > Task :app:packageDebugResources
+> Task :app:parseDebugLocalResources
 > Task :app:createDebugCompatibleScreenManifests
 > Task :app:extractDeepLinksDebug FROM-CACHE
-> Task :app:parseDebugLocalResources
-> Task :app:mergeDebugResources
 > Task :app:processDebugMainManifest
+> Task :app:mergeDebugResources
 > Task :app:processDebugManifest
 > Task :app:javaPreCompileDebug FROM-CACHE
-> Task :app:processDebugManifestForPackage
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
+> Task :app:processDebugManifestForPackage
 > Task :app:generateDebugAssets UP-TO-DATE
 > Task :app:mergeDebugAssets
 > Task :app:desugarDebugFileDependencies
-> Task :app:compressDebugAssets
 > Task :app:processDebugResources
+> Task :app:compressDebugAssets
 > Task :app:mergeDebugStartupProfile
 > Task :app:mergeDebugJniLibFolders
 > Task :app:checkDebugDuplicateClasses
@@ -241,23 +241,16 @@ Starting a Gradle Daemon (subsequent builds will be faster)
 w: file:///home/runner/work/MULTITOOL/MULTITOOL/core/src/main/java/com/jonathan/multitool/core/audio/AudioEngine.kt:155:29 Condition 'ch != null' is always 'true'
 
 > Task :core:compileDebugJavaWithJavac NO-SOURCE
-> Task :app:mergeExtDexDebug
+> Task :core:bundleLibCompileToJarDebug
 > Task :core:processDebugJavaRes
+> Task :app:mergeExtDexDebug
 > Task :core:bundleLibRuntimeToDirDebug
 > Task :core:bundleLibRuntimeToJarDebug
-> Task :core:bundleLibCompileToJarDebug
-> Task :core:extractDebugAnnotations
-> Task :core:mergeDebugGeneratedProguardFiles
-> Task :core:mergeDebugConsumerProguardFiles
-> Task :core:mergeDebugJavaResource
-> Task :core:syncDebugLibJars
-> Task :core:bundleDebugAar
-> Task :core:assembleDebug
 > Task :core-ui:compileDebugKotlin
 > Task :core-ui:compileDebugJavaWithJavac NO-SOURCE
 > Task :core-ui:bundleLibCompileToJarDebug
 > Task :core-ui:bundleLibRuntimeToJarDebug
-> Task :core-ui:processDebugJavaRes
+> Task :core:extractDebugAnnotations
 
 > Task :feature-drone:compileDebugKotlin
 w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-drone/src/main/java/com/jonathan/multitool/feature/drone/DroneScreen.kt:64:17 Parameter 'settings' is never used
@@ -275,13 +268,6 @@ w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-audio/src/main/java/com/
 > Task :feature-audio:compileDebugJavaWithJavac NO-SOURCE
 > Task :feature-audio:bundleLibCompileToJarDebug
 
-> Task :feature-image:compileDebugKotlin
-w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-image/src/main/java/com/jonathan/multitool/feature/image/ImageScreen.kt:460:9 Variable 'accent' is never used
-
-> Task :feature-image:compileDebugJavaWithJavac NO-SOURCE
-> Task :feature-image:bundleLibCompileToJarDebug
-> Task :feature-audio:bundleLibRuntimeToJarDebug
-
 > Task :feature-comms:compileDebugKotlin
 w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-comms/src/main/java/com/jonathan/multitool/feature/comms/Codecs.kt:46:47 There is more than one label with such a name in this scope
 w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-comms/src/main/java/com/jonathan/multitool/feature/comms/CommsScreen.kt:70:17 Parameter 'settings' is never used
@@ -290,9 +276,17 @@ w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-comms/src/main/java/com/
 
 > Task :feature-comms:compileDebugJavaWithJavac NO-SOURCE
 > Task :feature-comms:bundleLibCompileToJarDebug
+
+> Task :feature-image:compileDebugKotlin
+w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-image/src/main/java/com/jonathan/multitool/feature/image/ImageScreen.kt:460:9 Variable 'accent' is never used
+
+> Task :feature-audio:bundleLibRuntimeToJarDebug
+> Task :feature-image:compileDebugJavaWithJavac NO-SOURCE
+> Task :feature-image:bundleLibCompileToJarDebug
 > Task :feature-image:bundleLibRuntimeToJarDebug
 > Task :feature-drone:bundleLibRuntimeToJarDebug
 > Task :feature-comms:bundleLibRuntimeToJarDebug
+> Task :core-ui:processDebugJavaRes
 > Task :feature-audio:processDebugJavaRes
 > Task :feature-comms:processDebugJavaRes
 > Task :feature-drone:processDebugJavaRes
@@ -302,54 +296,60 @@ w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-comms/src/main/java/com/
 > Task :feature-drone:bundleLibRuntimeToDirDebug
 > Task :feature-comms:bundleLibRuntimeToDirDebug
 > Task :core-ui:bundleLibRuntimeToDirDebug
-> Task :feature-audio:extractDebugAnnotations
-> Task :feature-audio:mergeDebugGeneratedProguardFiles
-> Task :feature-audio:mergeDebugConsumerProguardFiles
-> Task :core-ui:extractDebugAnnotations
-> Task :core-ui:mergeDebugGeneratedProguardFiles
-> Task :core-ui:mergeDebugConsumerProguardFiles
-> Task :feature-audio:mergeDebugJavaResource
-> Task :core-ui:mergeDebugJavaResource
-> Task :feature-audio:syncDebugLibJars
-> Task :core-ui:syncDebugLibJars
-> Task :feature-audio:bundleDebugAar
-> Task :feature-audio:assembleDebug
-> Task :core-ui:bundleDebugAar
-> Task :core-ui:assembleDebug
-> Task :feature-drone:extractDebugAnnotations
-> Task :feature-drone:mergeDebugGeneratedProguardFiles
-> Task :feature-comms:extractDebugAnnotations
-> Task :feature-drone:mergeDebugConsumerProguardFiles
-> Task :feature-comms:mergeDebugGeneratedProguardFiles
-> Task :feature-comms:mergeDebugConsumerProguardFiles
-> Task :feature-drone:mergeDebugJavaResource
-> Task :feature-comms:mergeDebugJavaResource
-> Task :feature-drone:syncDebugLibJars
-> Task :feature-comms:syncDebugLibJars
-> Task :feature-comms:bundleDebugAar
-> Task :feature-comms:assembleDebug
-> Task :feature-drone:bundleDebugAar
-> Task :feature-drone:assembleDebug
+> Task :core:mergeDebugGeneratedProguardFiles
+> Task :core:mergeDebugConsumerProguardFiles
 
 > Task :feature-video:compileDebugKotlin
 w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-video/src/main/java/com/jonathan/multitool/feature/video/VideoScreen.kt:509:34 Parameter 'settings' is never used
 
-> Task :feature-image:extractDebugAnnotations
-> Task :feature-image:mergeDebugGeneratedProguardFiles
+> Task :core:mergeDebugJavaResource
 > Task :feature-video:compileDebugJavaWithJavac NO-SOURCE
-> Task :feature-image:mergeDebugConsumerProguardFiles
 > Task :feature-video:bundleLibCompileToJarDebug
+> Task :core:syncDebugLibJars
 > Task :feature-video:bundleLibRuntimeToJarDebug
-> Task :feature-image:mergeDebugJavaResource
 > Task :feature-video:processDebugJavaRes
 > Task :feature-video:bundleLibRuntimeToDirDebug
-> Task :feature-image:syncDebugLibJars
-> Task :feature-image:bundleDebugAar
-> Task :feature-image:assembleDebug
+> Task :core:bundleDebugAar
+> Task :core:assembleDebug
+> Task :core-ui:extractDebugAnnotations
+> Task :core-ui:mergeDebugGeneratedProguardFiles
+> Task :core-ui:mergeDebugConsumerProguardFiles
+> Task :core-ui:mergeDebugJavaResource
+> Task :core-ui:syncDebugLibJars
+> Task :core-ui:bundleDebugAar
+> Task :core-ui:assembleDebug
+> Task :feature-comms:extractDebugAnnotations
+> Task :feature-comms:mergeDebugGeneratedProguardFiles
+> Task :feature-comms:mergeDebugConsumerProguardFiles
+> Task :feature-comms:mergeDebugJavaResource
+> Task :feature-comms:syncDebugLibJars
+> Task :feature-comms:bundleDebugAar
+> Task :feature-comms:assembleDebug
+> Task :feature-drone:extractDebugAnnotations
+> Task :feature-drone:mergeDebugGeneratedProguardFiles
+> Task :feature-drone:mergeDebugConsumerProguardFiles
+> Task :feature-drone:mergeDebugJavaResource
+> Task :feature-drone:syncDebugLibJars
+> Task :feature-audio:extractDebugAnnotations
+> Task :feature-audio:mergeDebugGeneratedProguardFiles
+> Task :feature-audio:mergeDebugConsumerProguardFiles
+> Task :feature-audio:mergeDebugJavaResource
+> Task :feature-drone:bundleDebugAar
+> Task :feature-drone:assembleDebug
+> Task :feature-audio:syncDebugLibJars
+> Task :feature-audio:bundleDebugAar
+> Task :feature-audio:assembleDebug
+> Task :feature-image:extractDebugAnnotations
+> Task :feature-image:mergeDebugGeneratedProguardFiles
+> Task :feature-image:mergeDebugConsumerProguardFiles
+> Task :feature-image:mergeDebugJavaResource
 > Task :feature-video:extractDebugAnnotations
 > Task :feature-video:mergeDebugGeneratedProguardFiles
 > Task :feature-video:mergeDebugConsumerProguardFiles
+> Task :feature-image:syncDebugLibJars
 > Task :feature-video:mergeDebugJavaResource
+> Task :feature-image:bundleDebugAar
+> Task :feature-image:assembleDebug
 > Task :feature-video:syncDebugLibJars
 > Task :feature-video:bundleDebugAar
 > Task :feature-video:assembleDebug
@@ -375,8 +375,8 @@ Unable to strip the following libraries, packaging them as they are: libimage_pr
 > Task :app:validateSigningDebug
 > Task :app:compileDebugJavaWithJavac NO-SOURCE
 > Task :app:dexBuilderDebug
-> Task :app:processDebugJavaRes
 > Task :app:mergeDebugGlobalSynthetics
+> Task :app:processDebugJavaRes
 > Task :app:writeDebugAppMetadata
 > Task :app:writeDebugSigningConfigVersions
 > Task :app:mergeProjectDexDebug
@@ -385,6 +385,6 @@ Unable to strip the following libraries, packaging them as they are: libimage_pr
 > Task :app:createDebugApkListingFileRedirect
 > Task :app:assembleDebug
 
-BUILD SUCCESSFUL in 2m 59s
-277 actionable tasks: 232 executed, 45 from cache
+BUILD SUCCESSFUL in 3m 27s
+277 actionable tasks: 231 executed, 46 from cache
 outcome: success
