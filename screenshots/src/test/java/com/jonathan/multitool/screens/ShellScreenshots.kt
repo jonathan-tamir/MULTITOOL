@@ -91,15 +91,17 @@ class ShellScreenshots {
 
     @Test fun category_comms() = shot("category-comms") { it.catKey = "comms"; it.view = View.Category }
 
-    @Test fun drawer_open() = shot("drawer") { it.drawerOpen = true }
+    @Test fun drawer_open() = shot("drawer") { it.drawerOpen = true; it.staticRender = 0f }
     @Test fun settings() = shot("settings") { it.view = View.Settings }
 
     // frozen mid-frame of each takeover
     @Test fun overlay_cat_zoom() = shot("overlay-catzoom") {
         it.catKey = "image"; it.view = View.Category; it.overlay = Overlay.CatZoom("image")
+        it.staticRender = 0.45f
     }
     @Test fun overlay_signal() = shot("overlay-signal") {
         it.catKey = "sound"; it.toolName = "Spectrogram"; it.view = View.Utility
         it.overlay = Overlay.Signal("Spectrogram")
+        it.staticRender = 0.32f
     }
 }

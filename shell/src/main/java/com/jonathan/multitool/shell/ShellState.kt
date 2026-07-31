@@ -20,6 +20,13 @@ class ShellState {
     /** null = no overlay; otherwise the takeover currently playing. */
     var overlay by mutableStateOf<Overlay?>(null)
 
+    /**
+     * Off-device renderers compose one frame and never run animations, so everything animated
+     * would sit at t=0. Setting this pins every animation to a chosen progress instead. Null in
+     * the app; the screenshot harness sets it.
+     */
+    var staticRender: Float? = null
+
     val recents = mutableStateListOf<Recent>()
 
     fun toCategory(key: String) {

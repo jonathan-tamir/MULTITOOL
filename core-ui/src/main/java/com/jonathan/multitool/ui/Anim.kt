@@ -35,8 +35,9 @@ private val SplitEase = CubicBezierEasing(0.7f, 0f, 0.2f, 1f)
 private val RipEase = CubicBezierEasing(0.5f, 0f, 0.4f, 1f)
 
 @Composable
-private fun clock(durationMs: Int): Float {
-    // Off-device rendering can't advance an animation, so show a representative frame instead.
+private fun clock(durationMs: Int, freeze: Float?): Float {
+    // Off-device rendering can't advance an animation, so show the requested frame instead.
+    if (freeze != null) return freeze
     if (LocalInspectionMode.current) return 0.35f
     val a = remember { Animatable(0f) }
     LaunchedEffect(Unit) { a.animateTo(1f, tween(durationMs, easing = LinearEasing)) }
@@ -60,8 +61,8 @@ private fun motifInk(): Color =
  * while its code holds centre, then the whole thing dissolves onto the subspace.
  */
 @Composable
-fun CatZoomOverlay(motif: Motif, accent: Color, code: String) {
-    val t = clock(CAT_ZOOM_MS)
+fun CatZoomOverlay(motif: Motif, accent: Color, code: String, freeze: Float? = null) {
+    val t = clock(CAT_ZOOM_MS, freeze)
     val e = ZoomEase.transform(t)
     val ink = overlayInk()
     // keyframes: opacity 0 -> 1 @60% -> 0 ; scale .55 -> 1.35
@@ -97,8 +98,8 @@ fun CatZoomOverlay(motif: Motif, accent: Color, code: String) {
  * then the screen splits horizontally and slides open onto the tool.
  */
 @Composable
-fun SignalOverlay(accent: Color, label: String) {
-    val t = clock(SIGNAL_MS)
+fun SignalOverlay(accent: Color, label: String, freeze: Float? = null) {
+    val t = clock(SIGNAL_MS, freeze)
     val ink = overlayInk()
     val split = SplitEase.transform(t)
     val open = span(split, 0.52f, 1f)          // 0 until the halves start moving

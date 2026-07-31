@@ -112,9 +112,9 @@ fun Shell(settings: SettingsStore, audio: AudioEngine, state: ShellState) {
                 when (ov) {
                     is Overlay.CatZoom -> {
                         val c = Registry.category(ov.catKey)
-                        CatZoomOverlay(c.motif, accentFor(c.hue, t.dark), c.code)
+                        CatZoomOverlay(c.motif, accentFor(c.hue, t.dark), c.code, state.staticRender)
                     }
-                    is Overlay.Signal -> SignalOverlay(accent, ov.toolName)
+                    is Overlay.Signal -> SignalOverlay(accent, ov.toolName, state.staticRender)
                 }
             }
         }
@@ -441,7 +441,7 @@ private fun Drawer(
 ) {
     val t = LocalShell.current
     // Rendered off-device (screenshots / previews) animations never run, so start open there.
-    val inspecting = LocalInspectionMode.current
+    val inspecting = LocalInspectionMode.current || state.staticRender != null
     val slide = remember { Animatable(if (inspecting) 0f else 1f) }
     LaunchedEffect(Unit) { slide.animateTo(0f, tween(260)) }
 
