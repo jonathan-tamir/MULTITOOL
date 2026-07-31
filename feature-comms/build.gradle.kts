@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.jonathan.multitool.shell"
+    namespace = "com.jonathan.multitool.feature.comms"
     compileSdk = 34
     defaultConfig { minSdk = 26 }
     compileOptions {
@@ -17,11 +17,11 @@ android {
 }
 
 dependencies {
-    api(project(":core"))
-    api(project(":core-ui"))
-    implementation(project(":feature-audio"))
-    implementation(project(":feature-image"))
-    implementation(project(":feature-video"))
-    implementation(project(":feature-drone"))
-    implementation(project(":feature-comms"))
+    implementation(project(":core"))
+    implementation(project(":core-ui"))
+    val camerax = "1.3.3"
+    implementation("androidx.camera:camera-core:$camerax")
+    implementation("androidx.camera:camera-camera2:$camerax")
+    implementation("androidx.camera:camera-lifecycle:$camerax")
+    implementation("androidx.camera:camera-view:$camerax")
 }

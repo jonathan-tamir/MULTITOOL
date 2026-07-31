@@ -14,6 +14,7 @@ include(":feature-audio")
 include(":feature-image")
 include(":feature-video")
 include(":feature-drone")
+include(":feature-comms")
 
 // Screenshot rendering is opt-in: the module (and its Paparazzi plugin) is only configured when
 // asked for, so a screenshot-tooling problem can never break the APK build.

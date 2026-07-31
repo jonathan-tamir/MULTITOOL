@@ -88,6 +88,9 @@ class ShellScreenshots {
     @Test fun utility_video() = utility("utility-video", "video", "Live FFT2")
     @Test fun utility_drone() = utility("utility-drone", "misc", "Drone detector")
 
+    @Test fun category_comms() = shot("category-comms") { it.catKey = "comms"; it.view = View.Category }
+    @Test fun utility_morse() = utility("utility-morse", "comms", "Morse light")
+
     @Test fun drawer_open() = shot("drawer") { it.drawerOpen = true }
     @Test fun settings() = shot("settings") { it.view = View.Settings }
 

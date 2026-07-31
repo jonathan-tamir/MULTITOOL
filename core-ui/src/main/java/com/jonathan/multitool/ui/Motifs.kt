@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 
 /** One backdrop pattern per category, hinting at the physics it measures. */
-enum class Motif { Spectrum, Grid, Axes, Radar, Scan }
+enum class Motif { Spectrum, Grid, Axes, Radar, Scan, Pulse }
 
 /** Draws a motif at the given alpha behind the content. Scale is in px-equivalent units. */
 fun Modifier.motif(kind: Motif, color: Color, alpha: Float = 0.5f, scale: Float = 1f): Modifier =
@@ -53,6 +53,20 @@ fun DrawScope.drawMotif(kind: Motif, color: Color, scale: Float = 1f) {
             var y = 0f
             while (y < size.height) {
                 drawLine(color, Offset(0f, y), Offset(size.width, y), strokeWidth = stroke.width); y += step
+            }
+        }
+        Motif.Pulse -> {
+            val step = 11f * density * scale
+            var y = 0f
+            var row = 0
+            while (y < size.height) {
+                var x = (row % 3) * step
+                while (x < size.width) {
+                    val len = if ((row + (x / step).toInt()) % 3 == 0) step * 1.6f else step * 0.5f
+                    drawLine(color, Offset(x, y), Offset(x + len, y), strokeWidth = stroke.width)
+                    x += step * 2.6f
+                }
+                y += step; row++
             }
         }
         Motif.Radar -> {

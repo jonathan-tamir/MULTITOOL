@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import com.jonathan.multitool.core.audio.AudioEngine
 import com.jonathan.multitool.core.data.SettingsStore
 import com.jonathan.multitool.feature.audio.AudioScreen
+import com.jonathan.multitool.feature.comms.CommsScreen
+import com.jonathan.multitool.feature.comms.Mode
 import com.jonathan.multitool.feature.drone.DroneScreen
 import com.jonathan.multitool.feature.image.ImageScreen
 import com.jonathan.multitool.feature.video.VideoScreen
@@ -97,6 +99,21 @@ object Registry {
                 },
                 Tool("File transform", "FILE", "LP · HP · de-flicker", listOf("MP4 IN", "MP4 OUT")) {
                     VideoScreen(it.settings, startMode = 3, showChrome = false)
+                }
+            )
+        ),
+        Category(
+            key = "comms", name = "Communication", code = "LINK", hue = 250f, motif = Motif.Pulse,
+            desc = "Talk to another phone with light. Torch out, camera in, both at the same time.",
+            tools = listOf(
+                Tool("Morse light", "MRS", "send + decode \u00b7 human readable", listOf("TORCH", "ADAPTIVE")) {
+                    CommsScreen(it.settings, Mode.MORSE)
+                },
+                Tool("ASCII link", "UART", "8-N-1 over light \u00b7 any text", listOf("TORCH", "8-N-1")) {
+                    CommsScreen(it.settings, Mode.UART)
+                },
+                Tool("Fast link", "HUFF", "English only \u00b7 2.25x faster", listOf("TORCH", "HUFFMAN")) {
+                    CommsScreen(it.settings, Mode.FAST)
                 }
             )
         ),

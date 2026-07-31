@@ -1,6 +1,7 @@
 # Optical link — flashlight communication (design note)
 
-Status: **captured, not built.** Lands in Misc, next to the drone detector.
+Status: **built.** Ships as its own `Communication` category with three tools — Morse light,
+ASCII link, Fast link — all sharing one torch physical layer (`feature-comms`).
 
 Two things, in order of difficulty:
 
@@ -232,7 +233,7 @@ At a 150 ms symbol period (6.7 symbols/s):
 | Morse, English average | ~10 | 0.67 | 150 s |
 | 5-bit letter code, per-character frame | 7.0 | 0.95 | 105 s |
 | 5-bit letter code, message-level framing | 5.0 | 1.33 | 75 s |
-| Static Huffman on English frequencies (~3 bits/char) | 3.0 | 2.22 | 45 s |
+| Static Huffman, 46 symbols (4.41 bits/char, measured) | 4.41 | 1.51 | 66 s |
 | Order-2 arithmetic + shipped model (~2 bits/char) | 2.0 | 3.33 | 30 s |
 
 Two things worth noticing. **Morse is no faster than sending raw ASCII bytes** — it averages ~10 units
@@ -253,8 +254,11 @@ This is where the "slight errors are fine" appetite argues **against** maximum c
   garbage. On a channel where we've decided to tolerate errors, that's the wrong failure mode.
 - **Fixed 5-bit codes fail locally.** A corrupted character is one wrong letter; the rest of the message
   is untouched.
-- **Static Huffman sits in between** and is the sweet spot: ~2× compression, and Huffman codes tend to
-  re-synchronise within a few symbols after an error rather than losing the remainder.
+- **Static Huffman sits in between** and is what shipped: 4.41 bits/char measured over the real
+  46-symbol table (letters, digits, punctuation, end-of-message) — 2.25× an ASCII UART frame, though
+  only 1.13× a letters-only 5-bit code. Huffman also tends to re-synchronise within a few symbols
+  after an error rather than losing the remainder. The next real gain is a bigram or word model,
+  not more of the same.
 
 ### English is itself the error-correcting code
 
