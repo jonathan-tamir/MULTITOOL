@@ -19,10 +19,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.style.TextAlign
@@ -146,19 +143,34 @@ fun SignalOverlay(accent: Color, label: String) {
         Canvas(Modifier.fillMaxSize().alpha(inner)) {
             val sx = size.width / 412f
             val sy = size.height / 892f
-            val p = Path().apply {
-                moveTo(0f * sx, 446f * sy)
-                cubicTo(40f * sx, 446f * sy, 46f * sx, 300f * sy, 70f * sx, 300f * sy)
-                cubicTo(96f * sx, 300f * sy, 100f * sx, 590f * sy, 132f * sx, 590f * sy)
-                cubicTo(160f * sx, 590f * sy, 166f * sx, 250f * sy, 196f * sx, 250f * sy)
-                cubicTo(226f * sx, 250f * sy, 232f * sx, 640f * sy, 262f * sx, 640f * sy)
-                cubicTo(292f * sx, 640f * sy, 296f * sx, 380f * sy, 330f * sx, 380f * sy)
-                cubicTo(362f * sx, 380f * sy, 368f * sx, 470f * sy, 412f * sx, 470f * sy)
+            // Sampled polyline rather than PathMeasure.getSegment — the JVM screenshot renderer
+            // has no native path measurement, and this is deterministic everywhere.
+            val ctrl = listOf(
+                floatArrayOf(0f, 446f, 40f, 446f, 46f, 300f, 70f, 300f),
+                floatArrayOf(70f, 300f, 96f, 300f, 100f, 590f, 132f, 590f),
+                floatArrayOf(132f, 590f, 160f, 590f, 166f, 250f, 196f, 250f),
+                floatArrayOf(196f, 250f, 226f, 250f, 232f, 640f, 262f, 640f),
+                floatArrayOf(262f, 640f, 292f, 640f, 296f, 380f, 330f, 380f),
+                floatArrayOf(330f, 380f, 362f, 380f, 368f, 470f, 412f, 470f)
+            )
+            val perSeg = 24
+            val pts = ArrayList<Offset>(ctrl.size * perSeg + 1)
+            for (c in ctrl) {
+                for (i in 0..perSeg) {
+                    val u = i.toFloat() / perSeg
+                    val v = 1f - u
+                    val x = v * v * v * c[0] + 3f * v * v * u * c[2] + 3f * v * u * u * c[4] + u * u * u * c[6]
+                    val y = v * v * v * c[1] + 3f * v * v * u * c[3] + 3f * v * u * u * c[5] + u * u * u * c[7]
+                    pts.add(Offset(x * sx, y * sy))
+                }
             }
-            val pm = PathMeasure().apply { setPath(p, false) }
-            val drawn = Path()
-            pm.getSegment(0f, pm.length * rip, drawn, true)
-            drawStroke(drawn, accent, 2f * density)
+            val drawnTo = (pts.size * rip).toInt().coerceIn(1, pts.size - 1)
+            for (i in 0 until drawnTo) {
+                drawLine(
+                    accent, pts[i], pts[i + 1],
+                    strokeWidth = 2f * density, cap = StrokeCap.Round
+                )
+            }
 
             // scan column: -6% -> 106% of width, with a soft glow
             val x = size.width * (-0.06f + 1.12f * rip)
@@ -193,6 +205,3 @@ fun SignalOverlay(accent: Color, label: String) {
     }
 }
 
-private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawStroke(
-    path: Path, color: Color, width: Float
-) = drawPath(path, color, style = Stroke(width = width, cap = StrokeCap.Round))
