@@ -22,6 +22,8 @@ class SettingsStore(context: Context) {
     val keepAwake = mutableStateOf((prefs?.getBoolean("keepAwake", true) ?: true))
     val haptics = mutableStateOf((prefs?.getBoolean("haptics", true) ?: true))
     val autoLog = mutableStateOf((prefs?.getBoolean("autoLog", false) ?: false))
+    /** Symbol period for the light link, shared by every communication tool. */
+    val linkSymbolMs = mutableStateOf((prefs?.getInt("linkSymbolMs", 150) ?: 150))
 
     fun setThemeMode(v: String) { themeMode.value = v; prefs?.edit()?.putString("themeMode", v)?.apply() }
     fun setAccent(v: String) { accent.value = v; prefs?.edit()?.putString("accent", v)?.apply() }
@@ -34,6 +36,8 @@ class SettingsStore(context: Context) {
     fun setKeepAwake(v: Boolean) { keepAwake.value = v; prefs?.edit()?.putBoolean("keepAwake", v)?.apply() }
     fun setHaptics(v: Boolean) { haptics.value = v; prefs?.edit()?.putBoolean("haptics", v)?.apply() }
     fun setAutoLog(v: Boolean) { autoLog.value = v; prefs?.edit()?.putBoolean("autoLog", v)?.apply() }
+
+    fun setLinkSymbolMs(v: Int) { linkSymbolMs.value = v; prefs?.edit()?.putInt("linkSymbolMs", v)?.apply() }
 
     fun accentColor(): Color = ACCENTS[accent.value] ?: Color(0xFF22D3EE)
 

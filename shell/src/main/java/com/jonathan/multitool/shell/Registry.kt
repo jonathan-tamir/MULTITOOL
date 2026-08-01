@@ -5,6 +5,7 @@ import com.jonathan.multitool.core.audio.AudioEngine
 import com.jonathan.multitool.core.data.SettingsStore
 import com.jonathan.multitool.feature.audio.AudioScreen
 import com.jonathan.multitool.feature.comms.CommsScreen
+import com.jonathan.multitool.feature.comms.MirrorTestScreen
 import com.jonathan.multitool.feature.comms.Mode
 import com.jonathan.multitool.feature.drone.DroneScreen
 import com.jonathan.multitool.feature.image.ImageScreen
@@ -110,6 +111,9 @@ object Registry {
             key = "comms", name = "Communication", code = "LINK", hue = 250f, motif = Motif.Pulse,
             desc = "Talk to another phone with light. Torch out, camera in, both at the same time.",
             tools = listOf(
+                Tool("Mirror test", "LOOP", "one button \u00b7 checks the whole link", listOf("LOOPBACK", "AUTO")) {
+                    MirrorTestScreen(it.settings)
+                },
                 Tool("Morse light", "MRS", "send + decode \u00b7 human readable", listOf("TORCH", "ADAPTIVE")) {
                     CommsScreen(it.settings, Mode.MORSE)
                 },

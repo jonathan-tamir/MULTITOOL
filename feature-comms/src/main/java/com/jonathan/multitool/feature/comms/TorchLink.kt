@@ -47,6 +47,13 @@ class TorchLink(
     symbolMs: Long = 150L,
     var duplexMode: Duplex = Duplex.AUTO
 ) {
+    /**
+     * Mirror loopback: the return *is* our own transmission, so echo cancellation would delete
+     * exactly the signal we want. Off in loopback, along with the annulus subtraction and the
+     * take-turns fallback (which would mute the slot the reflection arrives in).
+     */
+    @Volatile var loopback = false
+
     @Volatile var control: CameraControl? = null
     @Volatile var onRun: ((Boolean, Long) -> Unit)? = null
     @Volatile var onLog: ((String) -> Unit)? = null
@@ -157,8 +164,10 @@ class TorchLink(
         }
         lastFrameNs = tNanos
 
-        // spatial isolation: our backscatter lifts the whole frame, the far torch lifts only the ROI
-        val spatial = roi - ring
+        // spatial isolation: our backscatter lifts the whole frame, the far torch lifts only the ROI.
+        // In loopback the reflection can fill the frame, so read the box raw and let the slicer's
+        // envelope tracking handle the baseline instead.
+        val spatial = if (loopback) roi else roi - ring
 
         if (calibrating) {
             calSignal.add(tNanos to spatial)
@@ -167,8 +176,8 @@ class TorchLink(
 
         // adaptive echo removal against our own known waveform
         val ref = if (txState) 1.0 else 0.0
-        val residual = spatial - echoGain * ref
-        if (ref != 0.0) {
+        val residual = if (loopback) spatial else spatial - echoGain * ref
+        if (ref != 0.0 && !loopback) {
             val mu = 0.02
             echoGain += mu * residual * ref / (ref * ref + 1e-6)
             echoErrAcc = 0.98 * echoErrAcc + 0.02 * abs(residual)
@@ -184,7 +193,9 @@ class TorchLink(
         val contrast = hi - lo
         val resid = if (echoRefAcc > 1e-9) (echoErrAcc / echoRefAcc) else 0.0
         var active = _stats.value.duplexActive
-        if (duplexMode == Duplex.AUTO) {
+        if (loopback) {
+            active = Duplex.FULL
+        } else if (duplexMode == Duplex.AUTO) {
             // If what's left after cancellation is still dominated by our own light, stop trying to
             // listen while we talk and take turns instead.
             val poor = echoGain > 0.02 && resid > 0.65

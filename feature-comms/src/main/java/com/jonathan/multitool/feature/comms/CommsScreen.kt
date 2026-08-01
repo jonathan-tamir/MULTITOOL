@@ -91,7 +91,8 @@ fun CommsScreen(settings: SettingsStore, mode: Mode) {
 
     var received by remember { mutableStateOf("") }
     var outgoing by remember { mutableStateOf("") }
-    var symbolMs by remember { mutableStateOf(150f) }
+    // one shared period for every light tool; the mirror test writes it
+    var symbolMs by remember { mutableStateOf(settings.linkSymbolMs.value.toFloat()) }
     var log by remember { mutableStateOf(listOf<String>()) }
     var calibrating by remember { mutableStateOf(false) }
 
@@ -345,10 +346,11 @@ fun CommsScreen(settings: SettingsStore, mode: Mode) {
             Slider(
                 value = symbolMs,
                 onValueChange = { symbolMs = it },
+                onValueChangeFinished = { settings.setLinkSymbolMs(symbolMs.toInt()) },
                 valueRange = 60f..400f,
                 steps = 16
             )
-            SmallNote("Both phones must use the same period. Lower is faster; too low and jitter eats the bit.")
+            SmallNote("Both phones must use the same period. Run the Mirror test to find the fastest one this handset can actually hold.")
 
             Text(
                 if (stats.calibrated)
