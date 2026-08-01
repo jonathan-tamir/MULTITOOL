@@ -10,129 +10,130 @@ For more details see https://docs.gradle.org/8.7/release-notes.html
 
 Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :core-ui:checkKotlinGradlePluginConfigurationErrors
-> Task :core:checkKotlinGradlePluginConfigurationErrors
 > Task :feature-comms:checkKotlinGradlePluginConfigurationErrors
+> Task :core:checkKotlinGradlePluginConfigurationErrors
 > Task :feature-audio:checkKotlinGradlePluginConfigurationErrors
 > Task :core:preBuild UP-TO-DATE
-> Task :feature-comms:preBuild UP-TO-DATE
 > Task :core:preDebugBuild UP-TO-DATE
+> Task :core-ui:preBuild UP-TO-DATE
+> Task :feature-comms:preBuild UP-TO-DATE
+> Task :core-ui:preDebugBuild UP-TO-DATE
 > Task :feature-comms:preDebugBuild UP-TO-DATE
 > Task :feature-audio:preBuild UP-TO-DATE
-> Task :core-ui:preBuild UP-TO-DATE
 > Task :feature-audio:preDebugBuild UP-TO-DATE
-> Task :core-ui:preDebugBuild UP-TO-DATE
+> Task :core:generateDebugResValues
+> Task :core-ui:generateDebugResValues
 > Task :feature-audio:generateDebugResValues
 > Task :feature-comms:generateDebugResValues
-> Task :core-ui:generateDebugResValues
-> Task :core:generateDebugResValues
-> Task :feature-audio:generateDebugResources
 > Task :core:generateDebugResources
-> Task :feature-comms:generateDebugResources FROM-CACHE
+> Task :feature-audio:generateDebugResources
 > Task :core-ui:generateDebugResources
+> Task :feature-comms:generateDebugResources FROM-CACHE
 > Task :core:packageDebugResources
 > Task :feature-audio:packageDebugResources
 > Task :feature-comms:packageDebugResources
 > Task :core-ui:packageDebugResources
-> Task :feature-comms:parseDebugLocalResources
-> Task :feature-audio:parseDebugLocalResources
 > Task :core:parseDebugLocalResources
+> Task :feature-audio:parseDebugLocalResources
+> Task :feature-comms:parseDebugLocalResources
 > Task :core-ui:parseDebugLocalResources
-> Task :core:javaPreCompileDebug
 > Task :core-ui:javaPreCompileDebug
-> Task :feature-audio:javaPreCompileDebug FROM-CACHE
-> Task :core:generateDebugRFile
-> Task :core-ui:generateDebugRFile
-> Task :feature-audio:generateDebugRFile
+> Task :core:javaPreCompileDebug FROM-CACHE
 > Task :core:mergeDebugShaders
-> Task :core-ui:mergeDebugShaders
-> Task :feature-audio:mergeDebugShaders
+> Task :feature-audio:generateDebugRFile
 > Task :feature-comms:generateDebugRFile
-> Task :feature-audio:compileDebugShaders NO-SOURCE
-> Task :core-ui:compileDebugShaders NO-SOURCE
-> Task :feature-audio:generateDebugAssets UP-TO-DATE
-> Task :core-ui:generateDebugAssets UP-TO-DATE
+> Task :core:generateDebugRFile
 > Task :feature-comms:javaPreCompileDebug FROM-CACHE
+> Task :core:compileDebugShaders NO-SOURCE
+> Task :feature-audio:javaPreCompileDebug FROM-CACHE
+> Task :feature-comms:mergeDebugShaders
+> Task :core-ui:generateDebugRFile
+> Task :core-ui:mergeDebugShaders
+> Task :feature-comms:compileDebugShaders NO-SOURCE
+> Task :feature-comms:generateDebugAssets UP-TO-DATE
+> Task :core-ui:compileDebugShaders NO-SOURCE
+> Task :core-ui:generateDebugAssets UP-TO-DATE
+> Task :feature-audio:mergeDebugShaders
+> Task :feature-audio:compileDebugShaders NO-SOURCE
+> Task :feature-audio:generateDebugAssets UP-TO-DATE
 > Task :core-ui:packageDebugAssets
 > Task :feature-drone:checkKotlinGradlePluginConfigurationErrors
 > Task :feature-drone:preBuild UP-TO-DATE
-> Task :feature-audio:packageDebugAssets
-> Task :feature-image:checkKotlinGradlePluginConfigurationErrors
 > Task :feature-drone:preDebugBuild UP-TO-DATE
-> Task :feature-image:preBuild UP-TO-DATE
-> Task :feature-comms:mergeDebugShaders
-> Task :feature-image:preDebugBuild UP-TO-DATE
-> Task :feature-comms:compileDebugShaders NO-SOURCE
-> Task :feature-comms:generateDebugAssets UP-TO-DATE
-> Task :feature-image:generateDebugResValues FROM-CACHE
-> Task :feature-drone:generateDebugResValues FROM-CACHE
 > Task :feature-comms:packageDebugAssets
-> Task :feature-drone:generateDebugResources FROM-CACHE
-> Task :feature-image:generateDebugResources FROM-CACHE
+> Task :feature-image:checkKotlinGradlePluginConfigurationErrors
+> Task :feature-audio:packageDebugAssets
+> Task :feature-image:preBuild UP-TO-DATE
 > Task :feature-video:checkKotlinGradlePluginConfigurationErrors
 > Task :feature-video:preBuild UP-TO-DATE
+> Task :feature-image:preDebugBuild UP-TO-DATE
 > Task :feature-video:preDebugBuild UP-TO-DATE
+> Task :feature-drone:generateDebugResValues FROM-CACHE
+> Task :feature-image:generateDebugResValues FROM-CACHE
 > Task :feature-video:generateDebugResValues FROM-CACHE
+> Task :feature-drone:generateDebugResources FROM-CACHE
+> Task :feature-image:generateDebugResources FROM-CACHE
 > Task :feature-video:generateDebugResources FROM-CACHE
-> Task :feature-image:packageDebugResources
 > Task :feature-drone:packageDebugResources
-> Task :feature-drone:parseDebugLocalResources FROM-CACHE
+> Task :feature-image:packageDebugResources
 > Task :feature-video:packageDebugResources
+> Task :feature-drone:parseDebugLocalResources FROM-CACHE
 > Task :feature-image:parseDebugLocalResources FROM-CACHE
 > Task :feature-video:parseDebugLocalResources FROM-CACHE
 > Task :feature-drone:generateDebugRFile
 > Task :feature-drone:javaPreCompileDebug FROM-CACHE
+> Task :feature-video:generateDebugRFile
 > Task :feature-image:generateDebugRFile
 > Task :feature-image:javaPreCompileDebug FROM-CACHE
+> Task :feature-video:javaPreCompileDebug FROM-CACHE
 > Task :feature-drone:mergeDebugShaders
 > Task :feature-drone:compileDebugShaders NO-SOURCE
 > Task :feature-drone:generateDebugAssets UP-TO-DATE
+> Task :feature-video:mergeDebugShaders
+> Task :feature-video:compileDebugShaders NO-SOURCE
+> Task :feature-video:generateDebugAssets UP-TO-DATE
 > Task :feature-image:mergeDebugShaders
 > Task :feature-image:compileDebugShaders NO-SOURCE
 > Task :feature-image:generateDebugAssets UP-TO-DATE
-> Task :feature-video:generateDebugRFile
-> Task :feature-image:packageDebugAssets
-> Task :screenshots:checkKotlinGradlePluginConfigurationErrors
-> Task :screenshots:preBuild UP-TO-DATE
-> Task :screenshots:preDebugBuild UP-TO-DATE
-> Task :feature-video:javaPreCompileDebug FROM-CACHE
+> Task :feature-video:packageDebugAssets
 > Task :feature-drone:packageDebugAssets
 > Task :shell:checkKotlinGradlePluginConfigurationErrors
 > Task :shell:preBuild UP-TO-DATE
 > Task :shell:preDebugBuild UP-TO-DATE
-> Task :screenshots:generateDebugResValues FROM-CACHE
+> Task :feature-image:packageDebugAssets
+> Task :screenshots:checkKotlinGradlePluginConfigurationErrors
+> Task :screenshots:preBuild UP-TO-DATE
+> Task :screenshots:preDebugBuild UP-TO-DATE
 > Task :shell:generateDebugResValues FROM-CACHE
-> Task :screenshots:generateDebugResources FROM-CACHE
-> Task :feature-video:mergeDebugShaders
+> Task :screenshots:generateDebugResValues FROM-CACHE
 > Task :shell:generateDebugResources FROM-CACHE
-> Task :feature-video:compileDebugShaders NO-SOURCE
-> Task :feature-video:generateDebugAssets UP-TO-DATE
+> Task :screenshots:generateDebugResources FROM-CACHE
 > Task :screenshots:packageDebugResources
-> Task :screenshots:parseDebugLocalResources FROM-CACHE
 > Task :shell:packageDebugResources
 > Task :shell:parseDebugLocalResources FROM-CACHE
-> Task :feature-video:packageDebugAssets
+> Task :screenshots:parseDebugLocalResources FROM-CACHE
+> Task :shell:javaPreCompileDebug FROM-CACHE
 > Task :screenshots:javaPreCompileDebug FROM-CACHE
 > Task :screenshots:preDebugUnitTestBuild UP-TO-DATE
-> Task :screenshots:generateDebugRFile
-> Task :shell:javaPreCompileDebug FROM-CACHE
+> Task :shell:generateDebugRFile
 > Task :screenshots:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :screenshots:generateDebugRFile
 > Task :shell:mergeDebugShaders
 > Task :shell:compileDebugShaders NO-SOURCE
 > Task :shell:generateDebugAssets UP-TO-DATE
-> Task :shell:generateDebugRFile
 > Task :shell:packageDebugAssets
-> Task :core:compileDebugShaders NO-SOURCE
 > Task :core:generateDebugAssets UP-TO-DATE
 > Task :core:packageDebugAssets
+> Task :screenshots:generateDebugUnitTestStubRFile
+> Task :screenshots:preparePaparazziDebugResources
 
 > Task :core:compileDebugKotlin
 w: file:///home/runner/work/MULTITOOL/MULTITOOL/core/src/main/java/com/jonathan/multitool/core/audio/AudioEngine.kt:155:29 Condition 'ch != null' is always 'true'
 
 > Task :core:compileDebugJavaWithJavac NO-SOURCE
-> Task :core:bundleLibRuntimeToJarDebug
 > Task :core:processDebugJavaRes
+> Task :core:bundleLibRuntimeToJarDebug
 > Task :core:bundleLibCompileToJarDebug
-> Task :screenshots:generateDebugUnitTestStubRFile
 > Task :core-ui:compileDebugKotlin
 > Task :core-ui:compileDebugJavaWithJavac NO-SOURCE
 > Task :core-ui:bundleLibRuntimeToJarDebug
@@ -140,7 +141,7 @@ w: file:///home/runner/work/MULTITOOL/MULTITOOL/core/src/main/java/com/jonathan/
 > Task :core-ui:bundleLibCompileToJarDebug
 
 > Task :feature-drone:compileDebugKotlin
-w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-drone/src/main/java/com/jonathan/multitool/feature/drone/DroneScreen.kt:64:17 Parameter 'settings' is never used
+w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-drone/src/main/java/com/jonathan/multitool/feature/drone/DroneScreen.kt:65:17 Parameter 'settings' is never used
 
 > Task :feature-drone:compileDebugJavaWithJavac NO-SOURCE
 > Task :feature-drone:bundleLibRuntimeToJarDebug
@@ -156,48 +157,46 @@ w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-audio/src/main/java/com/
 > Task :feature-audio:compileDebugJavaWithJavac NO-SOURCE
 > Task :feature-audio:bundleLibRuntimeToJarDebug
 > Task :feature-audio:processDebugJavaRes
+> Task :feature-audio:bundleLibCompileToJarDebug
+> Task :feature-drone:bundleLibCompileToJarDebug
 
 > Task :feature-image:compileDebugKotlin
 w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-image/src/main/java/com/jonathan/multitool/feature/image/ImageScreen.kt:460:9 Variable 'accent' is never used
 
 > Task :feature-image:compileDebugJavaWithJavac NO-SOURCE
-> Task :feature-image:bundleLibRuntimeToJarDebug
 > Task :feature-image:processDebugJavaRes
-> Task :feature-audio:bundleLibCompileToJarDebug
-> Task :feature-drone:bundleLibCompileToJarDebug
+> Task :feature-image:bundleLibRuntimeToJarDebug
 > Task :feature-image:bundleLibCompileToJarDebug
-> Task :feature-comms:compileDebugKotlin
-> Task :feature-video:compileDebugKotlin
-> Task :screenshots:preparePaparazziDebugResources
-
-> Task :feature-video:compileDebugKotlin
-w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-video/src/main/java/com/jonathan/multitool/feature/video/VideoScreen.kt:509:34 Parameter 'settings' is never used
-
-> Task :feature-video:compileDebugJavaWithJavac NO-SOURCE
-> Task :feature-video:bundleLibRuntimeToJarDebug
-> Task :feature-video:processDebugJavaRes
-> Task :feature-video:bundleLibCompileToJarDebug
 
 > Task :feature-comms:compileDebugKotlin
 w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-comms/src/main/java/com/jonathan/multitool/feature/comms/Codecs.kt:46:47 There is more than one label with such a name in this scope
-w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-comms/src/main/java/com/jonathan/multitool/feature/comms/CommsScreen.kt:70:17 Parameter 'settings' is never used
-w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-comms/src/main/java/com/jonathan/multitool/feature/comms/CommsScreen.kt:124:26 'setTargetResolution(Size): ImageAnalysis.Builder' is deprecated. Deprecated in Java
-w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-comms/src/main/java/com/jonathan/multitool/feature/comms/CommsScreen.kt:175:43 Unnecessary safe call on a non-null receiver of type Camera?
+w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-comms/src/main/java/com/jonathan/multitool/feature/comms/CommsScreen.kt:71:17 Parameter 'settings' is never used
+w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-comms/src/main/java/com/jonathan/multitool/feature/comms/CommsScreen.kt:126:26 'setTargetResolution(Size): ImageAnalysis.Builder' is deprecated. Deprecated in Java
+w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-comms/src/main/java/com/jonathan/multitool/feature/comms/CommsScreen.kt:177:43 Unnecessary safe call on a non-null receiver of type Camera?
 
 > Task :feature-comms:compileDebugJavaWithJavac NO-SOURCE
 > Task :feature-comms:bundleLibRuntimeToJarDebug
 > Task :feature-comms:processDebugJavaRes
 > Task :feature-comms:bundleLibCompileToJarDebug
+
+> Task :feature-video:compileDebugKotlin
+w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-video/src/main/java/com/jonathan/multitool/feature/video/EdgeScreen.kt:68:16 Parameter 'settings' is never used
+w: file:///home/runner/work/MULTITOOL/MULTITOOL/feature-video/src/main/java/com/jonathan/multitool/feature/video/VideoScreen.kt:509:34 Parameter 'settings' is never used
+
+> Task :feature-video:compileDebugJavaWithJavac NO-SOURCE
+> Task :feature-video:processDebugJavaRes
+> Task :feature-video:bundleLibRuntimeToJarDebug
+> Task :feature-video:bundleLibCompileToJarDebug
 > Task :shell:compileDebugKotlin
 > Task :shell:compileDebugJavaWithJavac NO-SOURCE
 > Task :shell:bundleLibCompileToJarDebug
 > Task :screenshots:compileDebugKotlin NO-SOURCE
-> Task :shell:bundleLibRuntimeToJarDebug
 > Task :screenshots:compileDebugJavaWithJavac NO-SOURCE
+> Task :shell:bundleLibRuntimeToJarDebug
 > Task :shell:processDebugJavaRes
 > Task :screenshots:bundleLibRuntimeToJarDebug
-> Task :screenshots:bundleLibCompileToJarDebug
 > Task :screenshots:processDebugJavaRes NO-SOURCE
+> Task :screenshots:bundleLibCompileToJarDebug
 > Task :screenshots:compileDebugUnitTestKotlin
 > Task :screenshots:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :screenshots:processDebugUnitTestJavaRes
@@ -207,6 +206,6 @@ See the Paparazzi report at: file:///home/runner/work/MULTITOOL/MULTITOOL/screen
 
 > Task :screenshots:recordPaparazziDebug
 
-BUILD SUCCESSFUL in 4m 16s
-119 actionable tasks: 95 executed, 24 from cache
+BUILD SUCCESSFUL in 2m 17s
+119 actionable tasks: 94 executed, 25 from cache
 outcome: success
