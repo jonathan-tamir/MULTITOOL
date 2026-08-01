@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import com.jonathan.multitool.core.audio.AudioEngine
@@ -11,6 +12,8 @@ import com.jonathan.multitool.core.data.SettingsStore
 import com.jonathan.multitool.shell.Registry
 import com.jonathan.multitool.shell.Shell
 import com.jonathan.multitool.shell.ShellState
+import com.jonathan.multitool.ui.LocalHaptics
+import com.jonathan.multitool.ui.rememberHaptics
 import com.jonathan.multitool.ui.theme.MultitoolTheme
 import com.jonathan.multitool.ui.theme.accentFor
 
@@ -37,8 +40,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
+            val haptics = rememberHaptics { settings.haptics.value }
             MultitoolTheme(settings.themeMode.value, accent) {
-                Shell(settings, audio, state)
+                CompositionLocalProvider(LocalHaptics provides haptics) {
+                    Shell(settings, audio, state)
+                }
             }
         }
     }

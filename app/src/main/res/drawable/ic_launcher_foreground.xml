@@ -1,10 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Six-blade aperture: one blade per step of the accent ramp the app uses for its categories,
+     with a signal trace in the pupil. Art sits inside r=32.5 of the 108 canvas, well within the
+     72dp adaptive-icon safe circle. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp"
     android:viewportWidth="108" android:viewportHeight="108">
-    <path android:fillColor="#22D3EE" android:pathData="M31,62h6v16h-6z"/>
-    <path android:fillColor="#22D3EE" android:pathData="M40,50h6v28h-6z"/>
-    <path android:fillColor="#22D3EE" android:pathData="M49,34h6v44h-6z"/>
-    <path android:fillColor="#22D3EE" android:pathData="M58,44h6v34h-6z"/>
-    <path android:fillColor="#22D3EE" android:pathData="M67,56h6v22h-6z"/>
-    <path android:fillColor="#5EEAD4" android:pathData="M31,30a21,21 0 0,1 42,0h-5a16,16 0 0,0 -32,0z"/>
+    <!-- hue 195 -->
+    <path android:fillColor="#39D6D7" android:pathData="M55.30,21.53 A32.50,32.50 0 0 1 81.47,36.63 L60.04,42.49 A13.00,13.00 0 0 0 47.96,42.49 Z"/>
+    <!-- hue 216 -->
+    <path android:fillColor="#43D1F1" android:pathData="M82.78,38.89 A32.50,32.50 0 0 1 82.78,69.11 L66.99,53.48 A13.00,13.00 0 0 0 60.95,43.01 Z"/>
+    <!-- hue 237 -->
+    <path android:fillColor="#66C9FF" android:pathData="M81.47,71.37 A32.50,32.50 0 0 1 55.30,86.47 L60.95,64.99 A13.00,13.00 0 0 0 66.99,54.52 Z"/>
+    <!-- hue 258 -->
+    <path android:fillColor="#8ABFFF" android:pathData="M52.70,86.47 A32.50,32.50 0 0 1 26.53,71.37 L47.96,65.51 A13.00,13.00 0 0 0 60.04,65.51 Z"/>
+    <!-- hue 279 -->
+    <path android:fillColor="#ACB5FF" android:pathData="M25.22,69.11 A32.50,32.50 0 0 1 25.22,38.89 L41.01,54.52 A13.00,13.00 0 0 0 47.05,64.99 Z"/>
+    <!-- hue 300 -->
+    <path android:fillColor="#CAABFF" android:pathData="M26.53,36.63 A32.50,32.50 0 0 1 52.70,21.53 L47.05,43.01 A13.00,13.00 0 0 0 41.01,53.48 Z"/>
+    <path android:fillColor="#0A0B0D" android:pathData="M54,39.4 A14.6,14.6 0 1 1 53.99,39.4 Z"/>
+    <path android:strokeColor="#6FD3E6" android:strokeWidth="1" android:strokeAlpha="0.6"
+        android:fillColor="#00000000" android:pathData="M54,39.4 A14.6,14.6 0 1 1 53.99,39.4 Z"/>
+    <path android:strokeColor="#EAF3FF" android:strokeWidth="2.3" android:strokeLineCap="round"
+        android:fillColor="#00000000" android:pathData="M45.0,54 C46.9,54 47.3,46.9 49.1,46.9 C50.9,46.9 51.2,61.5 53.2,61.5 C55.1,61.5 55.4,49.3 57.2,49.3 C59.1,49.3 59.5,54 63.0,54"/>
 </vector>

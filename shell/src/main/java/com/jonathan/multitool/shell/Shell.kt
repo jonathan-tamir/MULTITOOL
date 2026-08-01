@@ -38,16 +38,15 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.jonathan.multitool.core.audio.AudioEngine
 import com.jonathan.multitool.core.data.SettingsStore
 import com.jonathan.multitool.ui.CAT_ZOOM_MS
+import com.jonathan.multitool.ui.LocalHaptics
 import com.jonathan.multitool.ui.CatZoomOverlay
 import com.jonathan.multitool.ui.SIGNAL_MS
 import com.jonathan.multitool.ui.SignalOverlay
@@ -67,16 +66,16 @@ fun Shell(settings: SettingsStore, audio: AudioEngine, state: ShellState) {
     val cat = Registry.category(state.catKey)
     val accent = accentFor(cat.hue, t.dark)
     val host = remember(settings, audio) { ToolHost(settings, audio) }
-    val haptic = LocalHapticFeedback.current
+    val haptics = LocalHaptics.current
 
     fun launch(catKey: String, name: String, fromRecent: Boolean) {
-        if (settings.haptics.value) haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        haptics.launch()
         state.toTool(catKey, name, fromRecent)
     }
 
     // Guarded: off-device screenshot rendering has no back-press dispatcher.
     if (androidx.activity.compose.LocalOnBackPressedDispatcherOwner.current != null) {
-        BackHandler(enabled = state.view != View.Home || state.drawerOpen) { state.back() }
+        BackHandler(enabled = state.view != View.Home || state.drawerOpen) { haptics.back(); state.back() }
     }
 
     Box(Modifier.fillMaxSize().background(t.bg)) {
@@ -90,13 +89,13 @@ fun Shell(settings: SettingsStore, audio: AudioEngine, state: ShellState) {
             }
         }
 
-        if (state.view != View.Settings) EdgeToolbar { state.drawerOpen = true }
+        if (state.view != View.Settings) EdgeToolbar { haptics.tap(); state.drawerOpen = true }
 
         if (state.drawerOpen) {
             Drawer(
                 settings = settings,
                 state = state,
-                onOpenSettings = { state.view = View.Settings; state.drawerOpen = false },
+                onOpenSettings = { haptics.select(); state.view = View.Settings; state.drawerOpen = false },
                 onRecent = { r -> launch(r.catKey, r.toolName, true) }
             )
         }
@@ -181,6 +180,7 @@ private fun HomeScreen(settings: SettingsStore, state: ShellState) {
 @Composable
 private fun CategoryCard(cat: Category, modifier: Modifier, onClick: () -> Unit) {
     val t = LocalShell.current
+    val haptics = LocalHaptics.current
     val accent = accentFor(cat.hue, t.dark)
     Box(
         modifier
@@ -189,7 +189,7 @@ private fun CategoryCard(cat: Category, modifier: Modifier, onClick: () -> Unit)
             .background(t.card)
             .border(1.dp, t.line, RoundedCornerShape(14.dp))
             .motif(cat.motif, if (t.dark) Color(1f, 1f, 1f, 0.10f) else Color(0f, 0f, 0f, 0.13f), alpha = 0.5f)
-            .clickable(onClick = onClick)
+            .clickable { haptics.select(); onClick() }
             .padding(13.dp)
     ) {
         Box(
@@ -371,8 +371,9 @@ private fun Chip(label: String, color: Color) {
 @Composable
 private fun BackRow(label: String, onClick: () -> Unit) {
     val t = LocalShell.current
+    val haptics = LocalHaptics.current
     Row(
-        Modifier.clickable(onClick = onClick).padding(vertical = 4.dp),
+        Modifier.clickable { haptics.back(); onClick() }.padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(7.dp)
     ) {
@@ -440,6 +441,7 @@ private fun Drawer(
     onRecent: (Recent) -> Unit
 ) {
     val t = LocalShell.current
+    val haptics = LocalHaptics.current
     // Rendered off-device (screenshots / previews) animations never run, so start open there.
     val inspecting = LocalInspectionMode.current || state.staticRender != null
     val slide = remember { Animatable(if (inspecting) 0f else 1f) }
@@ -450,7 +452,7 @@ private fun Drawer(
             Modifier
                 .fillMaxSize()
                 .background(t.scrim)
-                .clickable { state.drawerOpen = false }
+                .clickable { haptics.back(); state.drawerOpen = false }
         )
         Column(
             Modifier
@@ -533,11 +535,12 @@ private fun Drawer(
 @Composable
 private fun DrawerRow(label: String, value: String, onClick: () -> Unit) {
     val t = LocalShell.current
+    val haptics = LocalHaptics.current
     Row(
         Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .clickable(onClick = onClick)
+            .clickable { haptics.tap(); onClick() }
             .padding(horizontal = 8.dp, vertical = 11.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -570,13 +573,14 @@ private fun quickSettings(s: SettingsStore): List<Quick> = listOf(
 @Composable
 private fun QuickTile(q: Quick, modifier: Modifier) {
     val t = LocalShell.current
+    val haptics = LocalHaptics.current
     val accent = accentFor(195f, t.dark)
     Box(
         modifier
             .clip(RoundedCornerShape(10.dp))
             .background(if (q.on) t.soft else Color.Transparent)
             .border(1.dp, if (q.on) t.line3 else t.line, RoundedCornerShape(10.dp))
-            .clickable { q.toggle() }
+            .clickable { haptics.toggle(!q.on); q.toggle() }
             .padding(horizontal = 10.dp, vertical = 11.dp)
     ) {
         Column {

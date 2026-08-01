@@ -8,6 +8,7 @@ import com.jonathan.multitool.feature.comms.CommsScreen
 import com.jonathan.multitool.feature.comms.Mode
 import com.jonathan.multitool.feature.drone.DroneScreen
 import com.jonathan.multitool.feature.image.ImageScreen
+import com.jonathan.multitool.feature.video.EdgeScreen
 import com.jonathan.multitool.feature.video.VideoScreen
 import com.jonathan.multitool.ui.Motif
 
@@ -90,6 +91,9 @@ object Registry {
             tools = listOf(
                 Tool("Live FFT2", "FFT2", "camera → spectrum", listOf("CAM", "LIVE")) {
                     VideoScreen(it.settings, startMode = 0, showChrome = false)
+                },
+                Tool("Edge vision", "EDGE", "live Sobel \u00b7 colour kept", listOf("CAM", "SOBEL")) {
+                    EdgeScreen(it.settings)
                 },
                 Tool("Filtered view", "FILT", "blur / edge · record", listOf("CAM", "MP4")) {
                     VideoScreen(it.settings, startMode = 1, showChrome = false)

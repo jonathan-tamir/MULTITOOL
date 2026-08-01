@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.jonathan.multitool.core.data.SettingsStore
+import com.jonathan.multitool.ui.LocalHaptics
 import com.jonathan.multitool.ui.SectionCard
 import com.jonathan.multitool.ui.SmallNote
 import com.jonathan.multitool.ui.theme.LocalAccent
@@ -72,6 +73,7 @@ fun CommsScreen(settings: SettingsStore, mode: Mode) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val accent = LocalAccent.current
     val t = LocalShell.current
+    val haptics = LocalHaptics.current
 
     var hasPermission by remember {
         mutableStateOf(
@@ -303,6 +305,7 @@ fun CommsScreen(settings: SettingsStore, mode: Mode) {
                 Button(
                     onClick = {
                         if (outgoing.isNotBlank()) {
+                            haptics.emit()
                             link.enqueue(codec.encode(outgoing))
                             addLog("queued ${outgoing.length} chars")
                         }

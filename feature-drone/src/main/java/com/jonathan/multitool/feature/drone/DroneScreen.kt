@@ -40,6 +40,7 @@ import com.jonathan.multitool.core.data.SettingsStore
 import com.jonathan.multitool.core.drone.DroneEngine
 import com.jonathan.multitool.core.drone.DroneModel
 import com.jonathan.multitool.core.drone.Featurizer
+import com.jonathan.multitool.ui.LocalHaptics
 import com.jonathan.multitool.ui.SectionCard
 import com.jonathan.multitool.ui.SmallNote
 import com.jonathan.multitool.ui.theme.LocalAccent
@@ -67,6 +68,7 @@ fun DroneScreen(settings: SettingsStore) {
     val t = LocalShell.current
     val alert = oklch(if (t.dark) 0.70f else 0.55f, 0.19f, 25f)
     val clock = remember { SimpleDateFormat("HH:mm:ss", Locale.US) }
+    val haptics = LocalHaptics.current
 
     val events = remember { mutableStateListOf<String>() }
     fun log(msg: String) {
@@ -118,7 +120,10 @@ fun DroneScreen(settings: SettingsStore) {
     }
 
     LaunchedEffect(detection) {
-        if (detection) log("DETECTION  p=%.2f (consensus)".format(prob))
+        if (detection) {
+            haptics.alert()
+            log("DETECTION  p=%.2f (consensus)".format(prob))
+        }
     }
 
     DisposableEffect(engine) {

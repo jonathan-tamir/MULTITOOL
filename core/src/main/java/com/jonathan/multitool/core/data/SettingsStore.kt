@@ -20,7 +20,7 @@ class SettingsStore(context: Context) {
 
     // shell quick settings
     val keepAwake = mutableStateOf((prefs?.getBoolean("keepAwake", true) ?: true))
-    val haptics = mutableStateOf((prefs?.getBoolean("haptics", false) ?: false))
+    val haptics = mutableStateOf((prefs?.getBoolean("haptics", true) ?: true))
     val autoLog = mutableStateOf((prefs?.getBoolean("autoLog", false) ?: false))
 
     fun setThemeMode(v: String) { themeMode.value = v; prefs?.edit()?.putString("themeMode", v)?.apply() }
