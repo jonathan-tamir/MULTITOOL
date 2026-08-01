@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,22 +16,24 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,10 +42,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.jonathan.multitool.core.data.SettingsStore
+import com.jonathan.multitool.ui.ChoiceChip
 import com.jonathan.multitool.ui.LocalHaptics
 import com.jonathan.multitool.ui.SectionCard
 import com.jonathan.multitool.ui.SmallNote
@@ -50,33 +55,17 @@ import com.jonathan.multitool.ui.theme.LocalAccent
 import com.jonathan.multitool.ui.theme.LocalShell
 import com.jonathan.multitool.ui.theme.Mono
 import com.jonathan.multitool.ui.theme.oklch
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-
-/** Short probe for the speed sweep — every extra character costs seconds at these rates. */
-private const val PROBE = "AB12"
-private const val TEST_TEXT = "MIRROR OK"
-
-/** Symbol periods tried fastest-last, so the sweep stops at the first failure. */
-private val LADDER = listOf(250L, 180L, 130L, 100L, 80L)
-
-private class Stage(val name: String) {
-    var state by mutableStateOf(0)       // 0 pending, 1 running, 2 pass, 3 fail
-    var detail by mutableStateOf("")
-}
+import kotlin.math.max
 
 /**
- * Point the phone at a mirror and press one button.
+ * Loopback: flash at a mirror and read your own message back.
  *
- * Loopback is the one case where the receiver's own design works against it: the echo canceller
- * exists to subtract anything correlated with what we're transmitting, and in a mirror the return
- * *is* what we're transmitting, perfectly correlated. So mirror mode turns cancellation off, pins
- * full duplex on (the take-turns fallback would mute the very slot the reflection arrives in), and
- * reads the aiming box raw.
+ * Loopback is the one case where the receiver's normal design works against it — the echo canceller
+ * exists to subtract whatever correlates with our own transmission, and here the return *is* our own
+ * transmission. So this screen runs the link with cancellation off, the annulus subtraction off (a
+ * reflection is a concentrated spot, not diffuse backscatter), and full duplex pinned.
  *
- * It also removes the two things that were yours to get wrong: nothing to aim at another phone,
- * and no symbol period to guess — the sweep finds the fastest one that round-trips intact and
- * saves it for the other tools.
+ * You pick the message and the codec; it shows you exactly what came back.
  */
 @Composable
 fun MirrorTestScreen(settings: SettingsStore) {
@@ -84,7 +73,6 @@ fun MirrorTestScreen(settings: SettingsStore) {
     val accent = LocalAccent.current
     val t = LocalShell.current
     val haptics = LocalHaptics.current
-    val scope = rememberCoroutineScope()
     val good = oklch(if (t.dark) 0.80f else 0.55f, 0.14f, 150f)
     val bad = oklch(if (t.dark) 0.70f else 0.55f, 0.19f, 25f)
 
@@ -99,29 +87,30 @@ fun MirrorTestScreen(settings: SettingsStore) {
     ) { hasPermission = it }
 
     val link = remember { TorchLink().apply { loopback = true } }
-    val codec = remember { UartCodec() }
-    val decoded = remember { StringBuffer() }
-    var running by remember { mutableStateOf(false) }
-    var verdict by remember { mutableStateOf("") }
-    var bestPeriod by remember { mutableStateOf(0L) }
+    var modeIdx by remember { mutableStateOf(1) }              // default: ASCII, the strictest
+    val mode = Mode.values()[modeIdx]
+    val codec = remember(mode) { codecFor(mode) }
 
-    val stages = remember {
-        mutableStateListOf(
-            Stage("Torch visible in frame"),
-            Stage("Timing measured"),
-            Stage("Fastest reliable speed"),
-            Stage("Round trip intact")
-        )
-    }
+    var outgoing by remember { mutableStateOf("MIRROR OK") }
+    var sent by remember { mutableStateOf("") }
+    var received by remember { mutableStateOf("") }
+    var symbolMs by remember { mutableStateOf(settings.linkSymbolMs.value.toFloat()) }
 
     link.onRun = { level, dur ->
-        decoded.append(codec.pushRun(level, dur, link.symbolMs * 1_000_000L))
+        val out = codec.pushRun(level, dur, symbolMs.toLong() * 1_000_000L)
+        if (out.isNotEmpty()) received += out
     }
+    link.symbolMs = symbolMs.toLong()
 
     val stats by link.stats.collectAsState()
     val trace by link.trace.collectAsState()
+    val sending by link.txActive.collectAsState()
     val previewView = remember { PreviewView(context) }
     BindTorchCamera(link, previewView, hasPermission)
+
+    LaunchedEffect(mode) {
+        codec.reset(); link.resetReceiver(); received = ""
+    }
 
     if (!hasPermission) {
         Column(Modifier.fillMaxSize().padding(16.dp)) {
@@ -135,116 +124,20 @@ fun MirrorTestScreen(settings: SettingsStore) {
         return
     }
 
-    suspend fun sendAndRead(text: String, periodMs: Long): String {
-        link.symbolMs = periodMs
-        link.clearQueue()
-        codec.reset()
-        link.resetReceiver()
-        decoded.setLength(0)
-        delay(400)
-        val bits = codec.encode(text)
-        link.enqueue(bits)
-        delay(bits.size * periodMs + 1200)
-        return decoded.toString().trim()
-    }
-
-    fun runAll() {
-        running = true
-        verdict = ""
-        stages.forEach { it.state = 0; it.detail = "" }
-        scope.launch {
-            // ── 1. is the torch even coming back? ──
-            val s1 = stages[0]
-            s1.state = 1
-            link.symbolMs = 300
-            link.resetReceiver()
-            link.enqueue(List(12) { it % 2 == 0 })
-            var peak = 0.0
-            repeat(40) {
-                delay(100)
-                if (stats.contrast > peak) peak = stats.contrast
-            }
-            s1.detail = "swing %.3f".format(peak)
-            if (peak < TorchLink.MIN_CONTRAST * 2) {
-                s1.state = 3
-                verdict = "The camera can't see the torch. Move closer to the mirror, dim the room, " +
-                    "and put the reflected torch inside the box."
-                running = false
-                haptics.alert()
-                return@launch
-            }
-            s1.state = 2
-            haptics.tap()
-
-            // ── 2. this handset's own latency and jitter ──
-            val s2 = stages[1]
-            s2.state = 1
-            var done = false
-            link.calibrate { lat, jit, _ ->
-                s2.detail = "latency %.0f ms · jitter %.1f ms".format(lat, jit)
-                s2.state = 2
-                done = true
-            }
-            var waited = 0
-            while (!done && waited < 90) { delay(100); waited++ }
-            if (!done) { s2.state = 3; s2.detail = "timed out" }
-            haptics.tap()
-
-            // ── 3. sweep down until it stops decoding ──
-            val s3 = stages[2]
-            s3.state = 1
-            var best = 0L
-            for (p in LADDER) {
-                s3.detail = "trying $p ms…"
-                val got = sendAndRead(PROBE, p)
-                if (got == PROBE) { best = p; s3.detail = "$p ms ok" } else break
-            }
-            if (best == 0L) {
-                s3.state = 3
-                s3.detail = "nothing decoded, even at 250 ms"
-                verdict = "Light is visible but nothing decodes. Usually the reflection is saturating " +
-                    "the sensor — back off from the mirror or aim slightly off-centre."
-                running = false
-                haptics.alert()
-                return@launch
-            }
-            bestPeriod = best
-            s3.state = 2
-            s3.detail = "$best ms"
-            haptics.tap()
-
-            // ── 4. confirm at the chosen speed ──
-            val s4 = stages[3]
-            s4.state = 1
-            val got = sendAndRead(TEST_TEXT, best)
-            if (got == TEST_TEXT) {
-                s4.state = 2
-                s4.detail = "\"$got\""
-                settings.setLinkSymbolMs(best.toInt())
-                verdict = "Link works. $best ms saved as the symbol period for the other tools."
-                haptics.launch()
-            } else {
-                s4.state = 3
-                s4.detail = "got \"$got\""
-                verdict = "Decoded at $best ms during the sweep but not on the confirm pass — the link " +
-                    "is marginal. Try one step slower."
-                haptics.alert()
-            }
-            running = false
-        }
-    }
+    val seen = stats.contrast > TorchLink.MIN_CONTRAST * 2
 
     Column(
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .imePadding()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Box(
             Modifier
                 .fillMaxWidth()
-                .height(180.dp)
+                .height(170.dp)
                 .clip(RoundedCornerShape(14.dp))
                 .background(Color.Black)
         ) {
@@ -253,53 +146,119 @@ fun MirrorTestScreen(settings: SettingsStore) {
                 val r = minOf(size.width, size.height) / 6f
                 val c = Offset(size.width / 2, size.height / 2)
                 drawRect(
-                    color = accent,
+                    color = if (seen) accent else Color.White.copy(alpha = 0.4f),
                     topLeft = Offset(c.x - r, c.y - r),
                     size = androidx.compose.ui.geometry.Size(r * 2, r * 2),
                     style = Stroke(width = 2f)
                 )
             }
             Text(
-                "LOOPBACK",
+                if (sending) "TRANSMITTING" else "LOOPBACK",
                 style = Mono.labelMedium,
-                color = Color.White.copy(alpha = 0.7f),
+                color = if (sending) accent else Color.White.copy(alpha = 0.7f),
                 modifier = Modifier.align(Alignment.TopStart).padding(10.dp)
             )
+            Text(
+                if (seen) "LIGHT OK · %.2f".format(stats.contrast) else "NO LIGHT",
+                style = Mono.labelMedium,
+                color = if (seen) good else bad,
+                modifier = Modifier.align(Alignment.TopEnd).padding(10.dp)
+            )
         }
-        SmallNote("Hold the phone facing a mirror so the reflected torch sits inside the box. A dim room helps a lot.")
+        SmallNote("Face a mirror so the reflected torch sits inside the box. Dim room, and back off if it saturates.")
 
-        Button(
-            onClick = { runAll() },
-            enabled = !running,
-            modifier = Modifier.fillMaxWidth()
-        ) { Text(if (running) "Testing…" else "Run mirror test") }
-
-        SectionCard("Checks") {
-            stages.forEach { s ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    val mark = when (s.state) { 2 -> "✓"; 3 -> "✕"; 1 -> "…"; else -> "·" }
-                    val col = when (s.state) { 2 -> good; 3 -> bad; 1 -> accent; else -> t.fg30 }
-                    Text(mark, style = Mono.labelMedium, color = col)
-                    Spacer(Modifier.width(10.dp))
-                    Column(Modifier.weight(1f)) {
-                        Text(
-                            s.name,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = if (s.state == 0) t.fg40 else t.fg
-                        )
-                        if (s.detail.isNotEmpty()) {
-                            Text(s.detail, style = Mono.label, color = t.fg40)
-                        }
-                    }
+        // ── what to send, and how ──
+        SectionCard("Message") {
+            OutlinedTextField(
+                value = outgoing,
+                onValueChange = { outgoing = it },
+                label = { Text("Text to send") },
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Characters),
+                modifier = Modifier.fillMaxWidth()
+            )
+            Row(
+                Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Mode.values().forEachIndexed { i, m ->
+                    ChoiceChip(m.label, modeIdx == i, accent) { modeIdx = i }
                 }
-                Spacer(Modifier.height(6.dp))
+            }
+            val symbols = if (outgoing.isBlank()) 0 else codec.symbolCount(outgoing)
+            Text(
+                "$symbols symbols · %.1f s at %d ms".format(symbols * symbolMs / 1000f, symbolMs.toInt()),
+                style = Mono.label, color = t.fg40
+            )
+            if (mode == Mode.MORSE && outgoing.isNotBlank()) {
+                Text((codec as MorseCodec).pattern(outgoing).take(120), style = Mono.label, color = accent)
+            }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(
+                    onClick = {
+                        haptics.emit()
+                        codec.reset()
+                        link.resetReceiver()
+                        link.clearQueue()
+                        received = ""
+                        sent = outgoing
+                        link.enqueue(codec.encode(outgoing))
+                    },
+                    enabled = outgoing.isNotBlank(),
+                    modifier = Modifier.weight(1f)
+                ) { Text(if (sending) "Sending…" else "Send and watch") }
+                OutlinedButton(onClick = {
+                    link.clearQueue(); codec.reset(); link.resetReceiver(); received = ""
+                }) { Text("Reset") }
             }
         }
 
-        if (verdict.isNotEmpty()) {
-            SectionCard {
-                Text(verdict, style = MaterialTheme.typography.bodyMedium, color = t.fg)
+        // ── what came back ──
+        SectionCard("Round trip") {
+            Text("sent", style = Mono.label, color = t.fg40)
+            Text(sent.ifBlank { "—" }, style = MaterialTheme.typography.bodyLarge, color = t.fg60)
+            Spacer(Modifier.height(8.dp))
+            Text("read back by the camera", style = Mono.label, color = t.fg40)
+            Text(
+                received.ifBlank { "—" },
+                style = MaterialTheme.typography.bodyLarge,
+                color = if (received.isBlank()) t.fg30 else t.fg
+            )
+            if (sent.isNotEmpty() && received.isNotEmpty()) {
+                val expect = if (mode == Mode.FAST) (codec as FastCodec).sanitize(sent).trim()
+                else if (mode == Mode.MORSE) sent.trim().uppercase() else sent
+                val got = received.trim()
+                val exact = got == expect
+                val matched = expect.zip(got).count { it.first == it.second }
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    if (exact) "exact match"
+                    else "$matched of ${expect.length} characters match",
+                    style = Mono.labelMedium,
+                    color = if (exact) good else bad
+                )
             }
+            if (mode == Mode.FAST) {
+                val s = (codec as? FastCodec)?.lastStatus.orEmpty()
+                if (s.isNotEmpty()) Text(s, style = Mono.label, color = t.fg40)
+            }
+            if (mode == Mode.UART) {
+                val e = (codec as? UartCodec)?.errors ?: 0
+                if (e > 0) Text("$e framing errors", style = Mono.label, color = t.fg40)
+            }
+        }
+
+        // ── speed ──
+        SectionCard("Symbol period") {
+            Text("${symbolMs.toInt()} ms", style = Mono.label, color = t.fg60)
+            Slider(
+                value = symbolMs,
+                onValueChange = { symbolMs = it },
+                onValueChangeFinished = { settings.setLinkSymbolMs(symbolMs.toInt()) },
+                valueRange = 60f..400f,
+                steps = 16
+            )
+            SmallNote("Shared with the other light tools. Walk it down until the round trip stops matching — that's this handset's floor.")
         }
 
         SectionCard("Live signal") {
@@ -314,7 +273,7 @@ fun MirrorTestScreen(settings: SettingsStore) {
                     if (trace.size < 2) return@Canvas
                     var mn = Float.MAX_VALUE; var mx = -Float.MAX_VALUE
                     for (v in trace) { if (v < mn) mn = v; if (v > mx) mx = v }
-                    val span = kotlin.math.max(1e-4f, mx - mn)
+                    val span = max(1e-4f, mx - mn)
                     val dx = size.width / (trace.size - 1)
                     for (i in 0 until trace.size - 1) {
                         drawLine(
@@ -330,12 +289,6 @@ fun MirrorTestScreen(settings: SettingsStore) {
                 "swing %.3f · %.0f fps · echo cancel off".format(stats.contrast, stats.fps),
                 style = Mono.label, color = t.fg40
             )
-        }
-
-        if (bestPeriod > 0) {
-            OutlinedButton(onClick = { settings.setLinkSymbolMs(bestPeriod.toInt()) }) {
-                Text("Use $bestPeriod ms everywhere")
-            }
         }
         Spacer(Modifier.height(4.dp))
     }

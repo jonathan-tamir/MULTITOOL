@@ -99,15 +99,33 @@ class TorchLink(
         if (!running.compareAndSet(false, true)) return
         txThread = thread(name = "torch-tx", isDaemon = true) {
             var slot = 0L
-            val t0 = System.nanoTime()
+            var t0 = System.nanoTime()
+            var period = symbolMs
             while (running.get()) {
-                val periodNs = symbolMs * 1_000_000L
-                val deadline = t0 + slot * periodNs
+                // Absolute deadlines keep the *mean* period exact — but they're measured from an
+                // origin, so changing the symbol rate mid-run must move the origin too. Without
+                // this the next deadline lands (slot × delta) away: change 150 ms to 250 ms after a
+                // minute of running and transmission stalls for half a minute.
+                if (symbolMs != period) {
+                    period = symbolMs
+                    t0 = System.nanoTime()
+                    slot = 0L
+                }
+                val periodNs = period * 1_000_000L
+                var deadline = t0 + slot * periodNs
+                // and if we've fallen badly behind (app paused, thread starved), resync rather
+                // than sprint through a burst of slots to catch up
+                if (System.nanoTime() - deadline > 4 * periodNs) {
+                    t0 = System.nanoTime()
+                    slot = 0L
+                    deadline = t0
+                }
                 val wait = deadline - System.nanoTime()
                 if (wait > 0) {
                     try { Thread.sleep(wait / 1_000_000L, (wait % 1_000_000L).toInt()) }
                     catch (t: InterruptedException) { break }
                 }
+                if (calibrating) { slot++; continue }   // calibration owns the torch meanwhile
                 // In TDD every other slot is silent so the far end has clear air to answer in.
                 val listenSlot = _stats.value.duplexActive == Duplex.TDD && (slot % 2L == 1L)
                 val bit = if (listenSlot) false else synchronized(txLock) {

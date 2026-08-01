@@ -111,7 +111,7 @@ object Registry {
             key = "comms", name = "Communication", code = "LINK", hue = 250f, motif = Motif.Pulse,
             desc = "Talk to another phone with light. Torch out, camera in, both at the same time.",
             tools = listOf(
-                Tool("Mirror test", "LOOP", "one button \u00b7 checks the whole link", listOf("LOOPBACK", "AUTO")) {
+                Tool("Loopback", "LOOP", "mirror \u00b7 send and read yourself", listOf("LOOPBACK", "NO CANCEL")) {
                     MirrorTestScreen(it.settings)
                 },
                 Tool("Morse light", "MRS", "send + decode \u00b7 human readable", listOf("TORCH", "ADAPTIVE")) {
